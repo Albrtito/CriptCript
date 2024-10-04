@@ -11,3 +11,4 @@ mysql-connector-python==9.0.0
 requests==2.32.3
 urllib3==2.2.2
 Werkzeug==3.0.4
+hashlib==20081119
