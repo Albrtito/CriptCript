@@ -1,4 +1,6 @@
+
 import hashlib
+
 
 class HashManager:
     """
@@ -6,20 +8,21 @@ class HashManager:
     """
     def __init__(self):
         pass
-
-    def create_hash(self, password):
+    @staticmethod
+    def create_hash( clear_text) -> str:
         """
         Create a hash of the password
         :param password -> password to hash
         :return -> hash of the password
         """
-        return hashlib.sha256(password.encode()).hexdigest()
-    
-    def verify_hash(self, password, hash) -> bool:
+        return hashlib.sha256(clear_text.encode()).hexdigest()
+   
+    @staticmethod
+    def verify_hash( clear_text, hash) -> bool:
         """
         Verify the inputted password against it's hash:
         :param password -> password to verify
         :param hash -> hash to verify against
         :return ->  True if hash matches password, False otherwise 
         """
-        return self.create_hash(password) == hash
+        return HashManager.create_hash(clear_text) == hash
