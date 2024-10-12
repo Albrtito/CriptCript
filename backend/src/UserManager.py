@@ -3,8 +3,9 @@
 """
 
 from flask import Flask, jsonify, make_response, request
+from mariaDB.query_users import insert_user, get_user_password
 from utils.HashManager import HashManager
-from MariaDb.user import insert_user
+
 
 # NOTE:ESTO HAY QUE ENRUTARLO
 def create_user():
@@ -23,6 +24,7 @@ def create_user():
     hashed_user = HashManager.create_hash(username)
     hashed_password = HashManager.create_hash(password)
 
+    # NOTE: Esta función(insert_user) podría no ser un bool sino devolver un response para tener propagación de errores
     if insert_user(hashed_user, hashed_password):
         # En el caso de que el hash no exista devolvemos un mensaje de éxito
         response = make_response(
@@ -32,4 +34,29 @@ def create_user():
         # En el caso de que el hash ya exista, devolvemos un error
         response = make_response(jsonify({"response": "Username already exists"}), 201)
 
+    return response
+
+
+def login_user():
+    """
+    Login a user:
+    1. Get user name and password
+    2. Hash the user
+    3. Get the user password from the database
+    4. Check that the hash is correct -> Use hash_manager.verify_hash()
+    """
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    # Hash the user and password before inserting them in the database
+    hashed_user = HashManager.create_hash(username)
+    
+    # The get_user_password method should return the hashed password of the user. 
+    # If the password is correct, the user exists and can log in.
+    if HashManager.verify_hash(password, get_user_password(hashed_user)):
+        response = make_response(jsonify({"response": "User exists!"}), 201)
+    else:
+        response = make_response(jsonify({"response": "Username or password is incorrect"}), 201)
+    
     return response

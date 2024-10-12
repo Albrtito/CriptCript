@@ -4,8 +4,6 @@ import mysql.connector
 from mariaDB.connection import DATABASE_NAME, get_db_connection
 
 
-# NOTE: ESTO NO HAY QUE ENRUTARLO, ES UNA FUNCIÓN DE APOYO
-# NOTE: Esta función podría no ser un bool sino devolver un response para tener propagación de errores
 def insert_user(hashed_user, hashed_password) -> bool:
     """
     Insert a new user in the database given the hashed user and password.
@@ -29,3 +27,29 @@ def insert_user(hashed_user, hashed_password) -> bool:
         return False
 
     return True
+
+
+def get_user_password(hashed_user) -> str:
+    """
+    Get the hashed password of a user given the hashed user.
+    """
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        # TODO: Esta query hay que cambiarla para que la función funcione
+        query = "SELECT * FROM users"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        #TODO: Aquí tiene que terminar la contraseña hasheada.
+        hashed_password = None
+        
+    except mysql.connector.Error as e:
+        logging.error(f"MySQL error: {e}")
+        return None
+    
+    except Exception as e:
+        logging.exception(f"Exception: {e}")
+        return  None
+    
+    return hashed_password 
