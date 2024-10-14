@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify, make_response
-import mysql.connector
-import logging
+from flask import Flask
+from users import users_bp
 
 app = Flask(__name__)
+
+app.register_blueprint(users_bp)
