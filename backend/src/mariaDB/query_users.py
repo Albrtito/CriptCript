@@ -1,7 +1,7 @@
 import logging
 
 import mysql.connector
-from mariaDB.connection import DATABASE_NAME, get_db_connection
+from src.mariaDB.connection import DATABASE_NAME, get_db_connection
 
 
 def insert_user(hashed_user, hashed_password) -> bool:
