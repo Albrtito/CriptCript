@@ -8,15 +8,16 @@
 
 </head>
 <body>
-<div class="authenticator">
+<form class="authenticator" id="form">
     <label for="user_r">Usuario</label>
     <input type="text" id ="user_r" name="user" required>
     <label for="password_r">Contraseña</label>
     <input type="password" id ="password_r" name="password" required>
     <label for="password_rr">Repetir Contraseña</label>
-    <input type="text" id ="password_rr" name="password" required>
-    <button class="type1 button" id="register" onclick="window.open('challenges.html')">Registrarse</button>
-</div>
+    <input type="password" id ="password_rr" name="repeatPassword" required>
+    <button class="type1 button" id="register">Registrarse</button>
+</form>
 
+<script src="../JavaScript/newusersr.js" type="module"></script>
 </body>
 </html>
