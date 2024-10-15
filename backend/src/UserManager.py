@@ -3,11 +3,13 @@
 """
 
 from flask import Flask, jsonify, make_response, request
-from mariaDB.query_users import insert_user, get_user_password
-from utils.HashManager import HashManager
+from src.mariaDB.query_users import insert_user, get_user_password
+from src.utils.HashManager import HashManager
+from flask import Blueprint
 
+users_bp = Blueprint('users', __name__)
 
-# NOTE:ESTO HAY QUE ENRUTARLO
+@users_bp.route('/create_user', methods=['POST'])
 def create_user():
     """
     Create a new user in the database:
@@ -36,7 +38,7 @@ def create_user():
 
     return response
 
-
+@users_bp.route('/login_user', methods=['GET'])
 def login_user():
     """
     Login a user:
