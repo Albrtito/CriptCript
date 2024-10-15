@@ -9,6 +9,13 @@ from flask import Blueprint
 
 users_bp = Blueprint('users', __name__)
 
+@users_bp.route('/hello', methods=['GET'])
+def hello():
+    response = make_response(
+            jsonify({"response": "hello!"}), 200
+        )
+    return(response)
+
 @users_bp.route('/create_user', methods=['POST'])
 def create_user():
     """
