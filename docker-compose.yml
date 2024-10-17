@@ -26,3 +26,13 @@ services:
       - "5001:5000"
     depends_on:
       - mariadb
+
+  frontend:
+    build: ./frontend  # Assumes your frontend code is in a ./frontend directory
+    container_name: cript_frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "8000:8000"
+    command: python -m http.server 8000
+
