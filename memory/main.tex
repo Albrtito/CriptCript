@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,11pt]{report}
 
 % Paquetes necesarios
 \usepackage[utf8]{inputenc}
@@ -12,6 +12,9 @@
 \usepackage{geometry}
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 \usepackage{float}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+
 
 % Configuración del pie de página
 \pagestyle{fancy}
@@ -45,9 +48,9 @@
 \newpage
 
 % Introducción sin numeración de capítulo
-\chapter{Propósito de la aplicación. Estructura interna}
+\section{Propósito de la aplicación. Estructura interna}
 
-\section{Propósito de la aplicación}
+\subsection{Propósito de la aplicación}
 
 La aplicación simula una página web, levantada en local por el propio usuario, en la que se pueden crear una serie de desafíos (\textit{challenges}) tanto privados como públicos. Dependiendo de qué tipo de sea cada desafío, el flujo interno (de código) será distinto.
 
@@ -63,17 +66,72 @@ El propósito de esta aplicación es generar un sistema informático que cumpla 
     \item El sistema debe de ser capaz de permitir a un usuario $A$ leer el desafío creado por el usuario $B$ si este se lo ha compartido.
 \end{enumerate}
 
-\section{Estructura interna}
+\subsection{Estructura interna}
 
 Esta aplicación consta de tres partes fundamentales:
 \begin{itemize}
     \item Frontend: esencial para la experiencia de usuario. Actua como interfaz entre el cliente y el backend.
-    \item Backend: donde se encuentra la API. Todos los mecanismos de cifrado, autenticación, \textit{hasheo} se encuentran en este directorio.
+    \item Backend: donde se encuentra la API, hecha en Flask. Todos los mecanismos de cifrado, autenticación, \textit{hasheo} se encuentran en este directorio.
     \item Base de datos: creada usando MariaDB SQL debido a su simplicidad. La base de datos tiene únicamente dos tablas, \textit{users} y \textit{challenges}.
 \end{itemize}
 
-\newpage 
+La base del backend y de la base de datos han sido tomadas desde el repositorio Open Source \textbf{backend-builderplate} del alumno y participante en esta práctica Javier Martín, una iniciativa que permite agilizar y automatizar el proceso de levantar una API y una base de datos que complemente a una interfaz de usuario. El código de este proyecto hereda del repositorio original.%
+\footnote{Repositorio original: \url{https://github.com/jmartinpizarro/backend-builderplate}.}
 
+\begin{verbatim}
+    .
+    ├── backend
+    │   ├── app.py
+    │   ├── Dockerfile
+    │   ├── requirements.txt
+    │   └── src
+    │       ├── mariaDB
+    │       │   ├── connection.py
+    │       │   └── query_users.py
+    │       ├── UserManager.py
+    │       └── utils
+    │           └── HashManager.py
+    ├── db_data
+    ├── docker-compose.yml
+    ├── frontend
+    │   ├── CSS
+    │   │   └── styles.css
+    │   ├── HTML
+    │   │   ├── challengecreate.html
+    │   │   ├── challenges.html
+    │   │   ├── login.html
+    │   │   ├── newuser.html
+    │   │   └── settings.html
+    │   ├── JavaScript
+    │   │   ├── challengesr.js
+    │   │   ├── loginsr.js
+    │   │   ├── newusersr.js
+    │   │   └── settingssr.js
+    │   └── python_server.py
+    ├── init.sql
+    ├── memory
+    │   ├── main.pdf
+    │   ├── main.tex
+    │   └── uc3m.jpg
+    └── README.md
+    \end{verbatim}
 
+El código anterior enseña en forma de árbol la estructura del proyecto. Las funciones de cifrado, \textit{hasheo} y demás se pueden encontrar en la carpeta de \textbf{utils}. Las rutas de la API se encuentran dentro de la carpeta \textbf{api}.
+
+Nótese que la carpeta \textbf{db\_data} es generada automáticamente a la hora de levantar el proyecto. Se necesitan permisos de administrador para eliminarla, ya que ahí se encuentran los datos de la propia base de datos (existe permanencia de datos incluso si cerramos el contenedor de Docker). Para levantar su proyecto en local, recomendamos que se lea las instrucciones del archivo \textit{README.md}.
+    
+\section{Autentiación de usuarios. Algoritmia}
+
+\section{Explicación del cifrado usado y su algoritmia}
+
+\section{Autenticación usando MAC}
+
+\section{Anexo}
+Este manuscrito y su correspondiente práctica ha sido realizado por:
+\begin{itemize}
+    \item Javier Martín Pizarro, 100495861@alumnos.uc3m.es
+    \item Alberto Pascau Núñez, 100xxxxxx@alumnos.uc3m.es
+    \item Raúl Armas Seriña, 100xxxxxx@alumnos.uc3m.es
+\end{itemize}
 
 \end{document}
