@@ -17,8 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({"username": user, "password": password})
         });
 
-        const data = await response.json()
-        console.log(data)
+        window.location.href = "../index.html"
     })
 })
 
