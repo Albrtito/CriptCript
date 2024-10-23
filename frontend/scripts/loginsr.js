@@ -2,6 +2,10 @@ export async function logInUser(){
     const username = document.getElementById('user').value
     const password = document.getElementById('password').value
 
+    if (username === '' || password === '') {
+        alert('Username or password cannot be empty')
+    }
+
     const response = await fetch('http://localhost:5001/login_user', {
         headers: {
             "Content-Type": "application/json"

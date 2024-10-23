@@ -21,7 +21,8 @@
                 <label for="user">Enviar a:</label>
                 <input type="text" id ="user" name="user" required>
             </div>
-            <button class="type1 button">Enviar</button>
+            <button class="type1 button" id="send-button">Enviar</button>
+            <p>Si no ponen nada en el input (para enviárselo a alguien), el challenge será público!</p>
         </div>
 </div>
 
@@ -30,5 +31,6 @@
     <button  onclick="window.location.href='challenges.html'">Volver</button>
 </div>
 
+<script type="module" src="./scripts/createChallenge.js"></script>
 </body>
 </html>
