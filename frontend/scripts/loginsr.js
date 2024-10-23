@@ -1,13 +1,13 @@
 export async function logInUser(){
-    const username = document.getElementById('user')
-    const password = document.getElementById('password')
+    const username = document.getElementById('user').value
+    const password = document.getElementById('password').value
 
     const response = await fetch('http://localhost:5001/login_user', {
         headers: {
             "Content-Type": "application/json"
         },
         method: "POST",
-        body: JSON.stringify({"username": user, "password": password})
+        body: JSON.stringify({"username": username, "password": password})
     });
 
     if (response.status === 201) {

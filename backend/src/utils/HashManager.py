@@ -1,4 +1,4 @@
-
+import logging
 import hashlib
 
 
@@ -15,6 +15,7 @@ class HashManager:
         :param password -> password to hash
         :return -> hash of the password
         """
+        logging.debug(clear_text)
         return hashlib.sha256(clear_text.encode()).hexdigest()
    
     @staticmethod
