@@ -11,9 +11,9 @@
 
 <body>
 <h1>CHALLENGES</h1>
-<label for="document">Documento</label>
-<textarea id="document" name="document" rows="10" cols="50">
-Escribe aquí...
+<p>Todos los mensajes estarán cifrados en cifrado Caesar... ¡Te toca crearlos!</p>
+<label for="document">Mensaje a cifrar</label>
+<textarea id="document" name="document" rows="10" cols="50" placeholder="Escribe aquí...">
 </textarea>
     <div class="container_row">
         <div class="container_column">
@@ -21,16 +21,13 @@ Escribe aquí...
                 <label for="user">Enviar a:</label>
                 <input type="text" id ="user" name="user" required>
             </div>
-            <button>+</button>
             <button class="type1 button">Enviar</button>
         </div>
 </div>
 
 
-<div class="container_column">
-    <button class="type1 button" onclick="window.location.href='challenges.html'">Publicar a todos</button>
+<div class="container_column" style="margin-top: 2rem;">
     <button  onclick="window.location.href='challenges.html'">Volver</button>
-
 </div>
 
 </body>
