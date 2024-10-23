@@ -41,7 +41,7 @@ def create_user():
         )
     else:
         # En el caso de que el hash ya exista, devolvemos un error
-        response = make_response(jsonify({"response": "Username already exists"}), 201)
+        response = make_response(jsonify({"response": "Username already exists"}), 422)
 
     return response
 

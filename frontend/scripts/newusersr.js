@@ -17,7 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({"username": user, "password": password})
         });
 
-        window.location.href = "../index.html"
+        if (response.status === 422) {
+            alert('Username already exists!')
+        } else {
+            window.location.href = "../index.html"
+        }
     })
 })
 

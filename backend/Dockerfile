@@ -1,5 +1,5 @@
 # select python version
-FROM python:3.12-slim 
+FROM python:3.12-alpine
 
 # then create the app/ working dir
 WORKDIR /app
