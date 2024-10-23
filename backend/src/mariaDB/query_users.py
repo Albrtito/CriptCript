@@ -38,11 +38,12 @@ def get_user_password(hashed_user) -> str:
         cursor = connection.cursor()
         
         # TODO: Esta query hay que cambiarla para que la función funcione
-        query = "SELECT * FROM users"
-        cursor.execute(query)
+        query = "SELECT user_password FROM users where username = %s"
+        cursor.execute(query, (hashed_user,))
         rows = cursor.fetchall()
-        #TODO: Aquí tiene que terminar la contraseña hasheada.
-        hashed_password = None
+        logging.debug(rows)
+        if rows:
+            hashed_password = rows[0][0]
         
     except mysql.connector.Error as e:
         logging.error(f"MySQL error: {e}")

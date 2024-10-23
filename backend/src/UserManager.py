@@ -6,6 +6,8 @@ from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
 from src.utils.HashManager import HashManager
 from flask import Blueprint
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 users_bp = Blueprint('users', __name__)
 
@@ -45,7 +47,7 @@ def create_user():
 
     return response
 
-@users_bp.route('/login_user', methods=['GET'])
+@users_bp.route('/login_user', methods=['POST'])
 def login_user():
     """
     Login a user:
@@ -60,12 +62,14 @@ def login_user():
 
     # Hash the user and password before inserting them in the database
     hashed_user = HashManager.create_hash(username)
+    logging.debug('%s %s %s', username, password, hashed_user)
+
+    hashed_password = get_user_password(hashed_user)
     
     # The get_user_password method should return the hashed password of the user. 
     # If the password is correct, the user exists and can log in.
-    if HashManager.verify_hash(password, get_user_password(hashed_user)):
+    if HashManager.verify_hash(password, hashed_password):
         response = make_response(jsonify({"response": "User exists!"}), 201)
     else:
-        response = make_response(jsonify({"response": "Username or password is incorrect"}), 201)
-    
+        response = make_response(jsonify({"response": "Username or password is incorrect"}), 422)
     return response

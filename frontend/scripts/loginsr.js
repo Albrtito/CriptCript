@@ -10,7 +10,7 @@ export async function logInUser(){
         body: JSON.stringify({"username": user, "password": password})
     });
 
-    if (response.status === 422) {
+    if (response.status === 201) {
         localStorage.setItem('userLogged', username)
         window.location.href = './challenges.html'
     } else {
