@@ -28,11 +28,12 @@ services:
       - mariadb
 
   frontend:
-    build: ./frontend  # Assumes your frontend code is in a ./frontend directory
+    build: ./frontend/  # Assumes your frontend code is in a ./frontend directory
     container_name: cript_frontend
     volumes:
-      - ./frontend:/app
+      - ./frontend/:/app
     ports:
       - "8000:8000"
+    working_dir: /app
     command: python -m http.server 8000
 
