@@ -6,6 +6,7 @@ import hashlib
 import base64
 from src.mariaDB.query_users import get_user_password
 import logging
+logging.basicConfig(level=logging.DEBUG)
 
 class CipherManager():
     """
@@ -19,7 +20,8 @@ class CipherManager():
         """
         Given a hash, it expands it. Lenght is considered to be in BYTES 16 bytes = 128bits
         """
-        hkdf = hashlib.pbkdf2_hmac('sha256', passwordHash, salt, 100000, dklen=length)
+        passwordBytes = passwordHash.encode()
+        hkdf = hashlib.pbkdf2_hmac('sha256', passwordBytes, salt, 100000, dklen=length)
         return hkdf
 
     @staticmethod
@@ -33,13 +35,12 @@ class CipherManager():
         #recover the password, which will act as a key
         password = get_user_password(user)
         expandedKey = CipherManager.hkdf_expand(password)
-        logging.debug('Expanded key is %s of length: ', expandedKey, len(expandedKey))
 
         cipher = Cipher(algorithms.AES(expandedKey), modes.ECB(), backend=default_backend()) # CAREFUL, WE ARE USING ECB
         encryptor = cipher.encryptor()
 
-        # Encriptar el mensaje directamente
-        encrypted = encryptor.update(challenge) + encryptor.finalize()
+        logging.debug("Length of challenge is: %d", len(challenge))
+        encrypted = encryptor.update(challenge.encode()) + encryptor.finalize()
 
         return base64.b64encode(encrypted).decode()
     
