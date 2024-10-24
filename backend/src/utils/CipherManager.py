@@ -42,7 +42,7 @@ class CipherManager():
         logging.debug("Length of challenge is: %d", len(challenge))
         encrypted = encryptor.update(challenge.encode()) + encryptor.finalize()
 
-        return base64.b64encode(encrypted).decode()
+        return encrypted
     
     @staticmethod
     def decipherChallengeAES(user, encrypted_challenge):
@@ -54,7 +54,6 @@ class CipherManager():
         # Recover the password, which will act as a key
         password = get_user_password(user)
         expandedKey = CipherManager.hkdf_expand(password)
-        logging.debug('Expanded key is %s of length: ', expandedKey, len(expandedKey))
 
         # Decode the base64 encoded encrypted message
         encrypted_challenge_bytes = base64.b64decode(encrypted_challenge)
@@ -64,5 +63,4 @@ class CipherManager():
 
         # Decrypt the message directly
         decrypted = decryptor.update(encrypted_challenge_bytes) + decryptor.finalize()
-
         return decrypted

@@ -18,15 +18,16 @@
 
 
 
-    <div class="container_row">
-        <div class="container_column">
-            <button class="type1 button" id="public">Públicos</button>
-
+    <section class="container_row">
+        <div class="container_column" style="display: flex; flex-direction: column; gap: 1rem;">
+            <h3>Desafíos públicos</h3>
+            <div id="private-challenges"></div>
         </div>
-        <div class="container_column">
-            <button class="type1 button" id="private">Recibidos</button>
 
+        <div class="container_column" id="private" style="display: flex; flex-direction: column; gap: 1rem;">
+            <h3>Desafíos privados</h3>
+            <div id="public-challenges"></div>
         </div>
-    </div>
+    </section>
 </body>
 </html>

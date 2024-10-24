@@ -39,7 +39,7 @@ def create_challenge():
 
           insert_challenge(titleHash, hashedUser, documentHash, 0, None)
 
-          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": hashedUser}}), 201)
+          response = make_response(jsonify({"response": "Challenge has been created!"}), 201)
           return response 
 
     else:
@@ -61,5 +61,16 @@ def get_public_challenges():
       Returns a response with all public challenges available for the user
       """
       publicChallenges = return_all_public()
+
+      # fields to decipher: title = 1, content = 2, author = 3, where numbers = index in the array
+      for i in range(0, len(publicChallenges), 1): # iterate through every row
+            title = publicChallenges[i][1]
+            content = publicChallenges[i][2]
+            author = publicChallenges[i][3]
+            
+            # remember: the key was the extended admin password (hash)
+            hashed_user = HashManager.create_hash('admin')
+            title = CipherManager.decipherChallengeAES(hashed_user, title)
+            logging.debug("title is: %s", title)
       response = make_response(jsonify({"response": publicChallenges}), 201)
       return response 
