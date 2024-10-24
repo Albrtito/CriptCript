@@ -59,7 +59,6 @@ def login_user():
     data = request.get_json()
     username = data.get("username")
     password = data.get("password")
-    logging.debug('%s %s', username, password)
 
     # Hash the user and password before inserting them in the database
     hashed_user = HashManager.create_hash(username)

@@ -4,6 +4,7 @@
 
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import user_exists, get_user_password
+from src.mariaDB.query_challenges import insert_challenge
 from src.utils.HashManager import HashManager
 from src.utils.CipherManager import CipherManager
 from flask import Blueprint
@@ -36,6 +37,8 @@ def create_challenge():
           cipheredTitle = CipherManager.cipherChallengeAES(adminHash, titleHash)
           cipheredMessage = CipherManager.cipherChallengeAES(adminHash, documentHash)
 
+          insert_challenge(titleHash, hashedUser, documentHash, 0, None)
+
           response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": hashedUser}}))
           return response 
 
@@ -46,6 +49,8 @@ def create_challenge():
     
           cipheredTitle = CipherManager.cipherChallengeAES(userHash, titleHash)
           cipheredMessage = CipherManager.cipherChallengeAES(userHash, documentHash)
+
+          insert_challenge(titleHash, hashedUser, documentHash, 1, userHash)
 
           response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": userHash}}))
           return response 
