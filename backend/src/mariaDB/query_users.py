@@ -56,7 +56,6 @@ def get_user_password(hashed_user) -> str:
         connection = get_db_connection()
         cursor = connection.cursor()
         
-        # TODO: Esta query hay que cambiarla para que la función funcione
         query = "SELECT user_password FROM users where username = %s"
         cursor.execute(query, (hashed_user,))
         rows = cursor.fetchall()

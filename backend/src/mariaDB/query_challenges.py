@@ -20,3 +20,22 @@ def insert_challenge(hashed_name_challenge, hash_creator_user, hash_content, isP
         logging.debug("%s", e)
         return False
     return True
+
+def return_all_public():
+    """
+    Returns all possible public challenges
+    """
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = "SELECT * FROM challenges where isPrivate = 0"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        if rows:
+            return rows
+
+    except mysql.connector.Error as e:
+        return None
+    except Exception as e:
+        return  None
