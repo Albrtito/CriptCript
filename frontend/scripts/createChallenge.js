@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton.addEventListener('click', async (event) => {
         event.preventDefault()
         const title = document.getElementById('title').value
-        const document = document.getElementById('document').value
+        const challenge = document.getElementById('challenge').value
         const userToShare = document.getElementById('user').value
         const userLogged = localStorage.getItem('userLogged')
 
-        if (title === '' || document === '' || userToShare === '' || userLogged === ''){
+        if (title === '' || challenge === '' || userLogged === ''){
             alert('There is something that cannot be empty... Or maybe you are not log in correctly?')
         }
 
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify({"title": title, "document": document, "userLogged": userLogged, "userToShare": userToShare})
+            body: JSON.stringify({"title": title, "document": challenge, "userLogged": userLogged, "userToShare": userToShare})
         })
 
         if (response.status === 201) {
