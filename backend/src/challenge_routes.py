@@ -30,9 +30,9 @@ def create_challenge():
     hashedUser = HashManager.create_hash(userLogged)
     if len(userToShare) == 0: # if challenge is public, cypher it with admin password hash
           adminHash = HashManager.create_hash('admin') # unsafe as fuck, but what we can do...
-          logging.debug("%s", adminHash)
           titleHash = HashManager.create_hash(title)
           documentHash = HashManager.create_hash(document)
+
           cipheredTitle = CipherManager.cipherChallengeAES(adminHash, titleHash)
           cipheredMessage = CipherManager.cipherChallengeAES(adminHash, documentHash)
 
@@ -40,15 +40,12 @@ def create_challenge():
           return response 
 
     else:
-          pass
-          
-    #TODO: create AES method
-    #cipheredDocument = cipherAES(document)
-    #cipheredTitle = cipherAES(title)
+          userHash = HashManager.create_hash(userToShare)
+          titleHash = HashManager.create_hash(title)
+          documentHash = HashManager.create_hash(document)
     
-    #TODO: insert challenge into database
-    #if insert_challenge(cipheredTitle, cipheredDocument, hashedUser, hashedToShareUser):
-    #        response = make_response(jsonify({"response": "Challenge inserted"}), 401)
-    #        return response 
+          cipheredTitle = CipherManager.cipherChallengeAES(userHash, titleHash)
+          cipheredMessage = CipherManager.cipherChallengeAES(userHash, documentHash)
 
-    
+          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": userHash}}))
+          return response 
