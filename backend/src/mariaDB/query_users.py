@@ -1,5 +1,4 @@
 import logging
-
 import mysql.connector
 from src.mariaDB.connection import DATABASE_NAME, get_db_connection
 
@@ -63,7 +62,6 @@ def get_user_password(hashed_user) -> str:
         query = "SELECT user_password FROM users where username = %s"
         cursor.execute(query, (hashed_user,))
         rows = cursor.fetchall()
-        logging.debug(rows)
         if rows:
             hashed_password = rows[0][0]
         
