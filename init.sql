@@ -6,7 +6,7 @@ USE backend_db;
 
 CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY,
-    user_password VARCHAR(255) UNIQUE
+    user_password VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS challenges(
