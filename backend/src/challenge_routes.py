@@ -4,7 +4,7 @@
 
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import user_exists, get_user_password
-from src.mariaDB.query_challenges import insert_challenge
+from src.mariaDB.query_challenges import insert_challenge, return_all_public
 from src.utils.HashManager import HashManager
 from src.utils.CipherManager import CipherManager
 from flask import Blueprint
@@ -39,7 +39,7 @@ def create_challenge():
 
           insert_challenge(titleHash, hashedUser, documentHash, 0, None)
 
-          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": hashedUser}}))
+          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": hashedUser}}), 201)
           return response 
 
     else:
@@ -52,5 +52,14 @@ def create_challenge():
 
           insert_challenge(titleHash, hashedUser, documentHash, 1, userHash)
 
-          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": userHash}}))
+          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": userHash}}), 201)
           return response 
+    
+@challenges_bp.route('/get_public_challenges', methods=['GET'])
+def get_public_challenges():
+      """
+      Returns a response with all public challenges available for the user
+      """
+      publicChallenges = return_all_public()
+      response = make_response(jsonify({"response": publicChallenges}), 201)
+      return response 
