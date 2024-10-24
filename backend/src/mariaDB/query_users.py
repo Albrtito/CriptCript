@@ -18,11 +18,9 @@ def user_exists(hashed_user) -> bool:
         else: 
             return False
     except mysql.connector.Error as e:
-        logging.error(f"MySQL error: {e}")
         return False
 
     except Exception as e:
-        logging.exception(f"Exception: {e}")
         return False
     
 def insert_user(hashed_user, hashed_password) -> bool:
@@ -40,11 +38,11 @@ def insert_user(hashed_user, hashed_password) -> bool:
         connection.commit()
 
     except mysql.connector.Error as e:
-        logging.error(f"MySQL error: {e}")
+        logging.debug(e)
         return False
 
     except Exception as e:
-        logging.exception(f"Exception: {e}")
+        logging.debug(e)
         return False
 
     return True
@@ -66,11 +64,9 @@ def get_user_password(hashed_user) -> str:
             hashed_password = rows[0][0]
         
     except mysql.connector.Error as e:
-        logging.error(f"MySQL error: {e}")
         return None
     
     except Exception as e:
-        logging.exception(f"Exception: {e}")
         return  None
     
     return hashed_password 
