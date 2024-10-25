@@ -2,16 +2,21 @@ import logging
 import mysql.connector
 from src.mariaDB.connection import DATABASE_NAME, get_db_connection
 
-def insert_challenge(hashed_name_challenge, hash_creator_user, hash_content, isPrivate, hashed_shared_user) -> bool:
+def insert_challenge(hashed_name_challenge, hash_creator_user, hash_content, isPrivate, hashed_shared_user='') -> bool:
     """
     Inserts a hashed challenge
     """
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        query = f"INSERT INTO {DATABASE_NAME}.challenges (name_challenge, user, content, isPrivate, shared_user) VALUES (%s, %s, %s, %s, %s)"        
-        cursor.execute(query, (hashed_name_challenge, hash_creator_user, hash_content, isPrivate, hashed_shared_user))
-        connection.commit()
+        if not isPrivate:
+            query = f"INSERT INTO {DATABASE_NAME}.public_challenges (name_challenge, user, content) VALUES (%s, %s, %s)"        
+            cursor.execute(query, (hashed_name_challenge, hash_creator_user, hash_content))
+            connection.commit()
+        else:
+            query = f"INSERT INTO {DATABASE_NAME}.private_challenges (name_challenge, user, content, shared_user) VALUES (%s, %s, %s, %s)"        
+            cursor.execute(query, (hashed_name_challenge, hash_creator_user, hash_content, hashed_shared_user))
+            connection.commit()
     except mysql.connector.Error as e:
         logging.debug("%s", e)
         return False
@@ -28,7 +33,7 @@ def return_all_public():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        query = "SELECT * FROM challenges where isPrivate = 0"
+        query = "SELECT * FROM public_challenges"
         cursor.execute(query)
         rows = cursor.fetchall()
 

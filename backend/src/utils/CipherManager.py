@@ -1,5 +1,5 @@
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import hashes, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 import hashlib
@@ -30,17 +30,25 @@ class CipherManager():
         Ciphers a challenge using AES
         param - user: must be a hashed user
         param - challenge: plain text message
-        param - lengthKey: length of the desired key in bytes
         """
-        #recover the password, which will act as a key
+        # Recupera la contraseña, que actuará como clave
         password = get_user_password(user)
         expandedKey = CipherManager.hkdf_expand(password)
 
-        cipher = Cipher(algorithms.AES(expandedKey), modes.ECB(), backend=default_backend()) # CAREFUL, WE ARE USING ECB
+        # Configura el cifrado AES con ECB
+        cipher = Cipher(algorithms.AES(expandedKey), modes.ECB(), backend=default_backend())
         encryptor = cipher.encryptor()
 
-        logging.debug("Length of challenge is: %d", len(challenge))
-        encrypted = encryptor.update(challenge.encode()) + encryptor.finalize()
+        # Relleno del challenge para que tenga el tamaño adecuado
+        padder = padding.PKCS7(algorithms.AES.block_size).padder()
+        padded_data = padder.update(challenge.encode()) + padder.finalize()
+
+        logging.debug("cipherChallengeAES>>>>Type of padded data: %s. Content of padded data: %s", type(padded_data), padded_data)
+
+        # Cifra el texto rellenado
+        encrypted = encryptor.update(padded_data) + encryptor.finalize()
+        
+        logging.debug("cipherChallengeAES>>>>Type of encrypted: %s. Content of encrypted: %s", type(encrypted), encrypted)
 
         return encrypted
     
@@ -49,18 +57,26 @@ class CipherManager():
         """
         Deciphers a challenge using AES
         param - user: must be a hashed user
-        param - encrypted_challenge: base64 encoded encrypted message
+        param - encrypted_challenge: bytes encoded encrypted message
         """
-        # Recover the password, which will act as a key
+        # Recupera la contraseña, que actuará como clave
         password = get_user_password(user)
         expandedKey = CipherManager.hkdf_expand(password)
 
-        # Decode the base64 encoded encrypted message
-        encrypted_challenge_bytes = base64.b64decode(encrypted_challenge)
-
+        # Configura el cifrado AES con ECB
         cipher = Cipher(algorithms.AES(expandedKey), modes.ECB(), backend=default_backend())
         decryptor = cipher.decryptor()
 
-        # Decrypt the message directly
-        decrypted = decryptor.update(encrypted_challenge_bytes) + decryptor.finalize()
-        return decrypted
+        # Descifra el mensaje
+        decrypted = decryptor.update(encrypted_challenge) + decryptor.finalize()
+
+        # Quita el relleno
+        unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+        unpadded_data = unpadder.update(decrypted) + unpadder.finalize()
+
+        deciphered_output = unpadded_data.decode('utf-8')
+
+        logging.debug("decipherChallengeAES>>>>Type of decrypted: %s. Content of decrypted: %s", type(deciphered_output), deciphered_output)
+
+        return deciphered_output
+

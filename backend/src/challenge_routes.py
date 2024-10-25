@@ -31,29 +31,25 @@ def create_challenge():
     hashedUser = HashManager.create_hash(userLogged)
     if len(userToShare) == 0: # if challenge is public, cypher it with admin password hash
           adminHash = HashManager.create_hash('admin') # unsafe as fuck, but what we can do...
-          titleHash = HashManager.create_hash(title)
-          documentHash = HashManager.create_hash(document)
 
-          cipheredTitle = CipherManager.cipherChallengeAES(adminHash, titleHash)
-          cipheredMessage = CipherManager.cipherChallengeAES(adminHash, documentHash)
+          cipheredTitle = CipherManager.cipherChallengeAES(adminHash, title)
+          cipheredMessage = CipherManager.cipherChallengeAES(adminHash, document)
 
-          insert_challenge(titleHash, hashedUser, documentHash, 0, None)
+          insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False)
 
           response = make_response(jsonify({"response": "Challenge has been created!"}), 201)
           return response 
 
     else:
           userHash = HashManager.create_hash(userToShare)
-          titleHash = HashManager.create_hash(title)
-          documentHash = HashManager.create_hash(document)
     
-          cipheredTitle = CipherManager.cipherChallengeAES(userHash, titleHash)
-          cipheredMessage = CipherManager.cipherChallengeAES(userHash, documentHash)
+          cipheredTitle = CipherManager.cipherChallengeAES(userHash, title)
+          cipheredMessage = CipherManager.cipherChallengeAES(userHash, document)
 
-          insert_challenge(titleHash, hashedUser, documentHash, 1, userHash)
+          insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True, userHash)
 
-          response = make_response(jsonify({"response": {"title": cipheredTitle, "message": cipheredMessage, "userShared": userToShare, "userLogged": userHash}}), 201)
-          return response 
+          response = make_response(jsonify({"response": "Challenge has been created!"}), 201)
+          return response  
     
 @challenges_bp.route('/get_public_challenges', methods=['GET'])
 def get_public_challenges():
@@ -64,13 +60,14 @@ def get_public_challenges():
 
       # fields to decipher: title = 1, content = 2, author = 3, where numbers = index in the array
       for i in range(0, len(publicChallenges), 1): # iterate through every row
-            title = publicChallenges[i][1]
+            cipheredTitle = publicChallenges[i][1] # type bytes
+            logging.debug("Type of the title from the frontend: %s", type(cipheredTitle))
             content = publicChallenges[i][2]
             author = publicChallenges[i][3]
             
             # remember: the key was the extended admin password (hash)
             hashed_user = HashManager.create_hash('admin')
-            title = CipherManager.decipherChallengeAES(hashed_user, title)
-            logging.debug("title is: %s", title)
+            title = CipherManager.decipherChallengeAES(hashed_user, cipheredTitle)
+            logging.debug("Type of the title: %s", type(title))
       response = make_response(jsonify({"response": publicChallenges}), 201)
       return response 
