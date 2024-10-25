@@ -57,17 +57,18 @@ def get_public_challenges():
       Returns a response with all public challenges available for the user
       """
       publicChallenges = return_all_public()
-
+      response = []
       # fields to decipher: title = 1, content = 2, author = 3, where numbers = index in the array
       for i in range(0, len(publicChallenges), 1): # iterate through every row
-            cipheredTitle = publicChallenges[i][1] # type bytes
-            logging.debug("Type of the title from the frontend: %s", type(cipheredTitle))
-            content = publicChallenges[i][2]
-            author = publicChallenges[i][3]
+            cipheredTitle = publicChallenges[i][1]
+            cipheredContent = publicChallenges[i][3]
             
             # remember: the key was the extended admin password (hash)
             hashed_user = HashManager.create_hash('admin')
             title = CipherManager.decipherChallengeAES(hashed_user, cipheredTitle)
-            logging.debug("Type of the title: %s", type(title))
-      response = make_response(jsonify({"response": publicChallenges}), 201)
+            content  = CipherManager.decipherChallengeAES(hashed_user, cipheredContent)
+            
+            json = {"title": title, "content": content}
+            response.append(json)
+      response = make_response(jsonify({"response": response}), 201)
       return response 
