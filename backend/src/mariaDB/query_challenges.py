@@ -44,3 +44,23 @@ def return_all_public():
         return None
     except Exception as e:
         return  None
+    
+def return_shared_with_user(user):
+    """
+    Returns all challenges shared with the user
+    param user - a hashed user
+    """
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = "SELECT * FROM private_challenges WHERE shared_user = %s"
+        cursor.execute(query, (user,))
+        rows = cursor.fetchall()
+        
+        if rows:
+            return rows
+        
+    except mysql.connector.Error as e:
+        return None
+    except Exception as e:
+        return  None
