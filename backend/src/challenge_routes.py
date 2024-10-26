@@ -3,8 +3,7 @@
 """
 
 from flask import Flask, jsonify, make_response, request
-from src.mariaDB.query_users import user_exists, get_user_password
-from src.mariaDB.query_challenges import insert_challenge, return_all_public
+from src.mariaDB.query_challenges import insert_challenge, return_all_public, return_shared_with_user
 from src.utils.HashManager import HashManager
 from src.utils.CipherManager import CipherManager
 from flask import Blueprint
@@ -71,4 +70,28 @@ def get_public_challenges():
             json = {"title": title, "content": content}
             response.append(json)
       response = make_response(jsonify({"response": response}), 201)
-      return response 
+      return response
+
+@challenges_bp.route('/get_private_challenges', methods=['GET'])
+def get_private_challenges():
+      """
+      Returns a response with all the private challenges shared with an user
+      """
+      data = request.get_json()
+      user = data.get('user') # obtain the hashed user for the query
+      privateChallenges = return_shared_with_user(user)
+      response = []
+      
+      for i in range(0, len(privateChallenges), 1):
+            cipheredTitle = privateChallenges[i][1]
+            cipheredContent = privateChallenges[i][3]
+            
+            title = CipherManager.decipherChallengeAES(user, cipheredTitle)
+            content  = CipherManager.decipherChallengeAES(user, cipheredContent)  
+            
+            json = {"title": title, "content": content}
+            response.append(json)
+      
+      response = make_response(jsonify({"response": response}))
+      return response
+      
