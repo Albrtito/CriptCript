@@ -77,8 +77,8 @@ def get_private_challenges():
       """
       Returns a response with all the private challenges shared with an user
       """
-      data = request.get_json()
-      user = HashManager.create_hash(data.get('user')) # obtain the hashed user for the query
+      user = request.args.get('user')
+      user = HashManager.create_hash(user) # obtain the hashed user for the query
       privateChallenges = return_shared_with_user(user)
       response = []
       
