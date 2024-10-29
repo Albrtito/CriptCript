@@ -47,7 +47,7 @@ def insert_user(hashed_user, hashed_password) -> bool:
 
     return True
 
-
+# BUG: Este método da error al introducir en el loging un user inexistente?
 def get_user_password(hashed_user) -> str:
     """
     Get the hashed password of a user given the hashed user.
