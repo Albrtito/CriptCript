@@ -1,5 +1,4 @@
-% !TEX program = XeLatex
-\documentclass[a4paper,11pt]{report}
+\documentclass[a4paper,11pt]{article}
 
 % Paquetes necesarios
 \usepackage[utf8]{inputenc}
@@ -11,11 +10,10 @@
 \usepackage{lipsum}
 \usepackage{tocbibind}
 \usepackage{geometry}
-\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\geometry{left=3cm,right=2.5cm,top=2cm,bottom=2cm}
 \usepackage{float}
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
-
 
 % Configuración del pie de página
 \pagestyle{fancy}
@@ -44,9 +42,10 @@
     \end{center}
 \end{titlepage}
 
-% Índice
-\tableofcontents
-\newpage
+% Eliminamos el índice de contenidos
+%\tableofcontents
+%\newpage
+
 
 % Introducción sin numeración de capítulo
 \section{Propósito de la aplicación. Estructura interna}
@@ -86,44 +85,77 @@ La base del backend y de la base de datos han sido tomadas desde el repositorio 
     │   ├── Dockerfile
     │   ├── requirements.txt
     │   └── src
+    │       ├── challenge_routes.py
     │       ├── mariaDB
     │       │   ├── connection.py
+    │       │   ├── query_challenges.py
     │       │   └── query_users.py
-    │       ├── UserManager.py
+    │       ├── user_routes.py
     │       └── utils
+    │           ├── ChallengeManager.py
+    │           ├── CipherManager.py
     │           └── HashManager.py
     ├── db_data
     ├── docker-compose.yml
     ├── frontend
-    │   ├── styles
-    │   │   └── styles.css
-    │   ├── HTML
-    │   │   ├── challengecreate.html
-    │   │   ├── challenges.html
-    │   │   ├── login.html
-    │   │   ├── newuser.html
-    │   │   └── settings.html
-    │   ├── JavaScript
-    │   │   ├── challengesr.js
+    │   ├── challengecreate.html
+    │   ├── challenges.html
+    │   ├── Dockerfile
+    │   ├── index.html
+    │   ├── newuser.html
+    │   ├── scripts
+    │   │   ├── challenges.js
+    │   │   ├── createChallenge.js
     │   │   ├── loginsr.js
+    │   │   ├── main.js
     │   │   ├── newusersr.js
     │   │   └── settingssr.js
-    │   └── python_server.py
+    │   ├── settings.html
+    │   └── styles
+    │       └── styles.css
     ├── init.sql
     ├── memory
     │   ├── main.pdf
     │   ├── main.tex
     │   └── uc3m.jpg
     └── README.md
-    \end{verbatim}
+\end{verbatim}
 
 El código anterior enseña en forma de árbol la estructura del proyecto. Las funciones de cifrado, \textit{hasheo} y demás se pueden encontrar en la carpeta de \textbf{utils}. Las rutas de la API se encuentran dentro de la carpeta \textbf{api}.
 
 Nótese que la carpeta \textbf{db\_data} es generada automáticamente a la hora de levantar el proyecto. Se necesitan permisos de administrador para eliminarla, ya que ahí se encuentran los datos de la propia base de datos (existe permanencia de datos incluso si cerramos el contenedor de Docker). Para levantar su proyecto en local, recomendamos que se lea las instrucciones del archivo \textit{README.md}.
     
-\section{Autentiación de usuarios. Algoritmia}
+\section{Autenticación de usuarios. Algoritmia}
+\label{sec:autenticacionUsuarios}
+Durante el registro de los usuarios, tanto el usuario como la contraseña de este son \textit{hasheados} e introducidos en la base de datos. Esto supone ciertos problemas, ya que un \textit{hash} es unidireccional y no podemos recuperar el valor original de dicho \textit{hash}. A pesar de eso, sabemos que dado un mismo texto, siempre obtendremos el mismo resultado tal que:
+$$H(M) = Hash$$
+
+Ergo, a la hora de iniciar sesión o trabajar con los usuarios en la base de datos, deberemos hacer un \textit{hash} para más tarde compararlo. Si dicho \textit{hash} es igual al esperado, podremos trabajar con él, autenticando que es el usuario introducido es el correcto.
+
+Por supuesto, siempre existe el riesgo de las \textbf{colisiones} tal que $H(M) = H'(M) = \text{colisión}$, pero es algo que es complicado que ocurra, ya que las funciones resumen están diseñadas para minimizar estos posibles errores.
 
 \section{Explicación del cifrado usado y su algoritmia}
+Para el cifrado de los mensajes y otros datos importantes se ha decantado por un cifrado simétrico, específicamente \textit{AES128}. Para mantener una estructura de código simple y eficiente, se ha desarrollado una clase \textit{CipherManager} que incorpora varios métodos, de especial importancia:
+\begin{itemize}
+    \item hkdf\_expand: usada para expandir \textit{hashes}.
+    \item cipherChallengeAES: usada para cifrar en AES
+    \item decipherChallengeAES: usada para descifrar un mensaje previamente cifrado en AES
+\end{itemize}
+
+Como ya se mencionó en la sección \ref{sec:autenticacionUsuarios}, los \textit{hashes} que se usarán para generar la clave son de 64 bits, por lo que se necesitará expandirlos hasta los 128 bits para trabajar con ellos.
+
+Es decir, que el cifrado es dependiente de la contraseña del usuario, aportando una capa de confidencialidad bastante robusta y eficiente. De la misma manera, el descifrado ocurre usando la misma metodología, que puede verse resumida tal que:
+\begin{enumerate}
+    \item Tras comprobar en el frontend que el usuario exista como usuario que ha iniciado sesión, hacemos una \textit{request} al \textit{backend}.
+    \item Desde el backend, se \textit{hashea} el usuario que ha enviado la petición y buscamos su contraseña en la base de datos.
+    \item Expandimos al contraseña hasta obtener una longitud de 128 bits.
+    \item Aplicamos el cifrado/descifrado \textit{AES128} y obtenemos un mensaje cifrado/descifrado.
+    \item Devolvemos la correspondiente \textit{response} al frontend.
+\end{enumerate}
+
+También se ha planteado una \textbf{estructura de cifrado asimétrica} que mantenga como claves privadas las claves generadas a partir de las contraseñas expandidas de los usuarios y que se utilice como clave pública una clave general para todos. Con esto conseguiríamos un nuevo grado de confidencialidad en nuestro software. 
+
+\textbf{Nótese que esto último no se encuentra implementado actualmente, pero sí se espera hacerlo como una mejora en la siguiente iteración.}
 
 \section{Autenticación usando MAC}
 
