@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS public_challenges (
     name_challenge BLOB NOT NULL UNIQUE,
     user VARCHAR(255) NOT NULL,
     content BLOB NOT NULL,
+    auth BLOB,
     FOREIGN KEY (user) REFERENCES users(username)
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS private_challenges (
     name_challenge BLOB NOT NULL UNIQUE,
     user VARCHAR(255) NOT NULL,
     content BLOB NOT NULL,
+    auth BLOB,
     shared_user VARCHAR(255),
     FOREIGN KEY (user) REFERENCES users(username),
     FOREIGN KEY (shared_user) REFERENCES users(username)

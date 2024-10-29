@@ -7,7 +7,6 @@ import logging
 from flask import Blueprint, Flask, jsonify, make_response, request
 from src.mariaDB.query_challenges import (insert_challenge, return_all_public,
                                           return_shared_with_user)
-from src.utils.CipherManager import CipherManager
 from src.utils.HashManager import HashManager
 from src.utils.keys import KeyGen
 from src.utils.MessageManager import MessageManager
@@ -19,7 +18,8 @@ challenges_bp = Blueprint("challenges", __name__)
 
 @challenges_bp.route("/create_challenge", methods=["POST"])
 def create_challenge():
-    """Creates a new challenge in the database
+    """
+    Creates a new challenge in the database
     Return: returns a response object
     """
     data = request.get_json()
@@ -36,25 +36,27 @@ def create_challenge():
     # Hash the value of the user to obtain the reference in the db
     hashedUser = HashManager.create_hash(userLogged)
 
-    # Check if the challenge is public or private
 
-    if (
-        len(userToShare) == 0
-    ):  # if challenge is public, cypher it with admin password hash
+    # If challenge is public, cypher it with admin password hash
         # NOTE: This is not the best practice. Later on with the implementation
         # of the KeyGen class this will change.
+
+    if (len(userToShare) == 0):  
 
         # Get user hash and the key from KeyGen class
         adminHash = HashManager.create_hash("admin")
         key = KeyGen.key_from_user(adminHash, 256)
-
-        # cipheredTitle = CipherManager.cipherChallengeAES(adminHash, title)
-        # cipheredMessage = CipherManager.cipherChallengeAES(adminHash, document)
+        # Cipher the title and the document
         cipheredTitle = MessageManager.cipher_message(title, key)
         cipheredMessage = MessageManager.cipher_message(document, key)
+        # Compute an AUTH hash for the whole message:
+        #NOTE: Order title+message is important.
+        auth=MessageManager.auth_create(cipheredTitle+cipheredMessage,key)
+        
+
 
         # Insert the ciphered challenge into the db
-        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False)
+        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False,auth)
 
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
@@ -62,20 +64,24 @@ def create_challenge():
         return response
 
     else:
-        userHash = HashManager.create_hash(userToShare)
-        key = KeyGen.key_from_user(userHash, 256)
-
-        # cipheredTitle = CipherManager.cipher_message(userHash, title)
-        # cipheredMessage = CipherManager.cipherChallengeAES(userHash, document)
+        # Get the key from KeyGen class
+        key = KeyGen.key_from_user(hashedUser, 256)
+        # Cipher the title and document
         cipheredTitle = MessageManager.cipher_message(title, key)
         cipheredMessage = MessageManager.cipher_message(document, key)
+        # Compute the AUTH hash for the whole message
+        auth = MessageManager.auth_create(cipheredTitle+cipheredMessage, key)
+   
 
-        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True, userHash)
+        # Insert the challenge into the db
+        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True,auth,hashedUser)
 
+        
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
         )
         return response
+
 
 
 @challenges_bp.route("/get_public_challenges", methods=["GET"])
@@ -85,7 +91,8 @@ def get_public_challenges():
     """
     publicChallenges = return_all_public()
     response = []
-    # remember: the key was the extended admin password (hash)
+
+    # Get the admin hash and generate the key with KeyGen class
     hashed_user = HashManager.create_hash("admin")
     key = KeyGen.key_from_user(hashed_user)
 
@@ -93,14 +100,22 @@ def get_public_challenges():
     for i in range(0, len(publicChallenges), 1):  # iterate through every row
         cipheredTitle = publicChallenges[i][1]
         cipheredContent = publicChallenges[i][3]
+        auth_value = publicChallenges[i][4]
+        
+        # Check authentication of the message:
+        if not MessageManager.auth_verify(auth_value,cipheredTitle+cipheredContent,key):
+        #TODO: Cambiar la response y hacer que se modifique en el frontend
+        #NOTE: Igual hay que hacer un continue aquí para que el resto no tengan
+        # problemas
+         raise Exception("The message is not authenticated")
 
-        # title = CipherManager.decipherChallengeAES(hashed_user, cipheredTitle)
-        # content = CipherManager.decipherChallengeAES(hashed_user, cipheredContent)
+        # Decipher the title and content
         title = MessageManager.decipher_message(cipheredTitle, key)
         content = MessageManager.decipher_message(cipheredContent, key)
 
         json = {"title": title, "content": content}
         response.append(json)
+
     response = make_response(jsonify({"response": response}), 201)
     return response
 
@@ -111,17 +126,25 @@ def get_private_challenges():
     Returns a response with all the private challenges shared with an user
     """
     user = request.args.get("user")
-    user_hash = HashManager.create_hash(user)  # obtain the hashed user for the query
+
+    # Get user hash and key from KeyGen class
+    user_hash = HashManager.create_hash(user) 
     key = KeyGen.key_from_user(user_hash)
+
     privateChallenges = return_shared_with_user(user)
     response = []
 
     for i in range(0, len(privateChallenges), 1):
         cipheredTitle = privateChallenges[i][1]
         cipheredContent = privateChallenges[i][3]
+        auth_value = publicChallenges[i][4]
+        
+        # Check authentication of the message:
+        if not MessageManager.auth_verify(auth_value,cipheredTitle+cipheredContent,key):
+        #TODO: Cambiar la response y hacer que se modifique en el frontend
+         raise Exception("The message is not authenticated")
 
-        #title = CipherManager.decipherChallengeAES(user, cipheredTitle)
-        #content = CipherManager.decipherChallengeAES(user, cipheredContent)
+        # Decipher the title and content
         title = MessageManager.decipher_message(cipheredTitle,key)
         content = MessageManager.decipher_message(cipheredContent,key)
 

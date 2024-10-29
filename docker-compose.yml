@@ -37,4 +37,5 @@ services:
       - "8000:8000"
     working_dir: /app
     command: python -m http.server 8000
+    stop_grace_period: 1s
 
