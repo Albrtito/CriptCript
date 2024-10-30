@@ -133,6 +133,8 @@ def get_private_challenges():
 
     privateChallenges = return_shared_with_user(user)
     response = []
+    if not privateChallenges:
+        raise ValueError("No valid value for private challenges: NONE")
 
     for i in range(0, len(privateChallenges), 1):
         cipheredTitle = privateChallenges[i][1]

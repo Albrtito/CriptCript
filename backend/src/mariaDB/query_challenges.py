@@ -1,6 +1,8 @@
 import logging
+
 import mysql.connector
 from src.mariaDB.connection import DATABASE_NAME, get_db_connection
+
 
 def insert_challenge(hashed_name_challenge:bytes, hash_creator_user:str,
                      hash_content:bytes,
@@ -17,7 +19,7 @@ def insert_challenge(hashed_name_challenge:bytes, hash_creator_user:str,
             connection.commit()
         else:
             query = f"INSERT INTO {DATABASE_NAME}.private_challenges(name_challenge, user, content,auth, shared_user) VALUES (%s,%s, %s, %s, %s)"        
-            cursor.execute(query, (hashed_name_challenge, hash_creator_user,hash_content, hashed_shared_user,auth))
+            cursor.execute(query, (hashed_name_challenge,hash_creator_user,hash_content, auth,hashed_shared_user))
             connection.commit()
 
     except mysql.connector.Error as e:
@@ -33,6 +35,7 @@ def return_all_public():
     """
     Returns all possible public challenges
     """
+    rows = []
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
@@ -44,15 +47,16 @@ def return_all_public():
             return rows
 
     except mysql.connector.Error as e:
-        return [] 
+        raise Exception("Error in mysql connector") 
     except Exception as e:
-        return [] 
+        raise Exception("Error when getting all public challenges") 
     
 def return_shared_with_user(user):
     """
     Returns all challenges shared with the user
     param user - a hashed user
     """
+    rows = []
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
@@ -64,6 +68,6 @@ def return_shared_with_user(user):
             return rows
         
     except mysql.connector.Error as e:
-        return []
+        raise Exception("Error in mysql connector") 
     except Exception as e:
-        return  []
+        raise Exception("Error when getting all public challenges") 
