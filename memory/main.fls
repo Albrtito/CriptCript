@@ -748,6 +748,15 @@ INPUT images/users.png
 INPUT ./images/HashFunctions.png
 INPUT ./images/HashFunctions.png
 INPUT images/HashFunctions.png
+INPUT ./images/KeyGen.png
+INPUT ./images/KeyGen.png
+INPUT images/KeyGen.png
+INPUT ./images/encript_AES.png
+INPUT ./images/encript_AES.png
+INPUT images/encript_AES.png
+INPUT ./images/decript_AES.png
+INPUT ./images/decript_AES.png
+INPUT images/decript_AES.png
 INPUT main.aux
 INPUT ./main.out
 INPUT ./main.out

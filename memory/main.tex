@@ -107,8 +107,8 @@ Esta aplicación consta de tres partes fundamentales:
     \item \textbf{Base de datos:} creada usando MariaDB SQL debido a su
         simplicidad. Actualmente la base de datos utiliza 3 tablas
         \textit{users} ,\textit{private\_challenges} y
-        \textit{public\_challenges}.Estas tablas se recogen en el
-        \hyperref[sec:TablasSQL]{primer anexo}.  
+        \textit{public\_challenges}.El código para la creación de estas tablas se recoge en el
+        \hyperref[sec:TablasSQL]{primer anexo}. 
 \end{itemize}
 La base del backend y de la base de datos han sido tomadas desde el repositorio
 Open Source \textbf{backend-builderplate} del alumno y participante en esta
@@ -154,13 +154,17 @@ algoritmo que representa cada clase, creando secciones para algoritmos de
 \textbf{autenticación, encriptación, generación de claves, cifrado autenticado, generación y verificación de hashes y
 cifrados cásicos}. \\
 En sta carpeta también podemos encontrar la clase MessageManager; encargada de cifrar y
-autenticar los mensajes con el algoritmo correcto.\\\\
+autenticar los mensajes con el algoritmo correcto. 
+\begin{itemize}
+    \item \textbf{Todos estos algoritmos criptográficos han sido implementados usando la librería de python cryptography}
+\end{itemize}
 
+\vspace{0.5cm}
 \fbox{
     \begin{minipage}[t]{0.8\textwidth}
         \textbf{NOTA:} Para la primera entrega solo se utilizan las clases de AESManger
-        para cifrar y MACManager para autenticar, no obstante la el flujo información
-        entre clases está ideado para que otros algoritmos puedan se utilizados, incluso
+        para cifrar y MACManager para autenticar, no obstante la estructura de 
+        clases está ideada para que otros algoritmos también puedan se utilizados, incluso
         algoritmos de cifrado autenticado como fernet.\\
         Haciendouso de esta estructura para la entrega final, el usuario será
         capaz de elegir con que algoritmos cifrar
@@ -175,17 +179,19 @@ autenticar los mensajes con el algoritmo correcto.\\\\
 Durante el registro de los usuarios, tanto el usuario como la contraseña de este
 son \textit{hasheados} e introducidos en la base de datos.Esto asegura que nunca
 se guardarán contraseñas o nombres de usuario en texto plano, manteniendo la
-confidencialidad de dicha contraseña y usuario fuera del alcance de atacantes.
+confidencialidad de la contraseña y nombre del usuario fuera del alcance de atacantes.
 \\
-Este método de guardado permite que comprobemos la autenticidad de un usuario o
-contraseña a traves de una comparación de igual con el hash que tenemos
+Este método permite que comprobemos la autenticidad de un usuario o
+contraseña a traves de una comparación de igualdad con el hash que tenemos
 guardado. Sabemos que dado el mismo texto en claro debemos siempre de obtener el
 mismo Hash.
 $$H(M) = Hash$$
 
 Entonces, a la hora de iniciar sesión o trabajar con los usuarios en la base de datos, deberemos hacer un \textit{hash} para más tarde compararlo. Si dicho \textit{hash} es igual al esperado, podremos trabajar con él, autenticando que es el usuario introducido es el correcto.
 
-Por supuesto, siempre existe el riesgo de las \textbf{colisiones} tal que $H(M) = H'(M) = \text{colisión}$, pero es algo que es complicado que ocurra, ya que las funciones resumen están diseñadas para minimizar estos posibles errores.
+Por supuesto, siempre existe el riesgo de las \textbf{colisiones} tal que $H(M) = H'(M) = \text{colisión}$, pero es algo que es complicado que ocurra, ya que las funciones resumen están diseñadas para minimizar estos posibles errores.\\ 
+
+En esta primera entrega se han utilizado las contraseñas hasheadas de los usuarios como claves para el cifrado de mensajes de forma asimétrica, más sobre esto y la generación de claves en \hyperref[sec:generacionUsoDeClaves]{el punto 3.1}.
 
 
 \subsection{Implementación con SHA256}
@@ -200,35 +206,45 @@ El código que permite tanto crear como verificar hashes se encuentra en la clas
 verificación se encuentran en el \hyperref[sec:funcionesHash]{segundo anexo}
 
 
-\section{Cifrado y descifrado de mensajes}
-Para el cifrado de los mensajes y otros datos importantes se ha decantado por un cifrado simétrico, específicamente \textit{AES128}. Para mantener una estructura de código simple y eficiente, se ha desarrollado una clase \textit{CipherManager} que incorpora varios métodos, de especial importancia:
+\section{Cifrado y descifrado de mensajes:AES256}
+Para el cifrado y decifrado de mensajes entre el backend y la base de datos se ha implementado un \textbf{cifrado simétrico}, específicamente \textbf{AES256} con el modo CTR.\\
+Hemos elegido el modo CTR debido a que:
 \begin{itemize}
-    \item hkdf\_expand: usada para expandir \textit{hashes}.
-    \item cipherChallengeAES: usada para cifrar en AES
-    \item decipherChallengeAES: usada para descifrar un mensaje previamente cifrado en AES
+    \item No require generar padding para el mensaje a cifrar
+    \item Solo hace falta una clave y un valor nonce
+    \item El valor del nonce no ha de ser privado sino único, permitiendo que se almacene junto al mensaje cifrado y aumentando la seguridad del cifrado
 \end{itemize}
 
-Como ya se mencionó en la sección \ref{sec:autenticacionUsuarios}, los \textit{hashes} que se usarán para generar la clave son de 64 bits, por lo que se necesitará expandirlos hasta los 128 bits para trabajar con ellos.
+Las funciones que implementan AES son dos \textit{encript\_AES y decript\_AES} y se encuentran dentro de la clase \textit{AESManager} bajo \textit{./backend/src/utils/auth/AESManager.py}.Las capturas de estas funciones se pueden ver en el \hyperref[sec:funcionesAES]{cuarto anexo}. Ambas funciones requieren una clave y un valor para el nonce, la obtención de estos valores se explica en la siguiente sección \\\\
+Por último, debemos de mencionar el \textbf{método que se utiliza para guardar el valor del nonce}. Sabiendo  que este valor puede ser público lo únimos al texto cifrado una vez realizado el AES, al realizar el descifrado lo primero que hacemos es obtener los primeros 16 bytes del mensaje para usarlos como nonce. 
 
-Es decir, que el cifrado es dependiente de la contraseña del usuario, aportando una capa de confidencialidad bastante robusta y eficiente. De la misma manera, el descifrado ocurre usando la misma metodología, que puede verse resumida tal que:
-\begin{enumerate}
-    \item Tras comprobar en el frontend que el usuario exista como usuario que ha iniciado sesión, hacemos una \textit{request} al \textit{backend}.
-    \item Desde el backend, se \textit{hashea} el usuario que ha enviado la petición y buscamos su contraseña en la base de datos.
-    \item Expandimos al contraseña hasta obtener una longitud de 128 bits.
-    \item Aplicamos el cifrado/descifrado \textit{AES128} y obtenemos un mensaje cifrado/descifrado.
-    \item Devolvemos la correspondiente \textit{response} al frontend.
-\end{enumerate}
+\subsection{Generación y uso de claves}
+\label{sec:generacionUsoDeClaves}
+La generación y comprobación de claves se realiza dentro de la clase KeyGen. Actualmente esta clase tiene un único método que genera las claves usando las contraseñas hasheadas de los usuarios. No obstante los hashes son demasiado grandes para ser usados en el AES256 pues son de 64bytes, debido a esto el método de generación de claves de KeyGen parte a la mitad el hash del usuario y lo devuelve como clave. La captura de este método se puede ver en el \hyperref[sec:funcionesKeyGen]{tercer anexo}. \\
 
-También se ha planteado una \textbf{estructura de cifrado asimétrica} que mantenga como claves privadas las claves generadas a partir de las contraseñas expandidas de los usuarios y que se utilice como clave pública una clave general para todos. Con esto conseguiríamos un nuevo grado de confidencialidad en nuestro software. 
+Diferenciamos entre dos tipos de claves que se generan ambas a partir del hash de la contraseña de un usuario. 
+\begin{itemize}
+\item La clave que se utiliza para cifrar desafíos públicos, que es siempre la misma y se obtiene usando el hash del admin.
+\item La clave que se utiliza para cifrar desafíos privados, que se obtendrá usando el hash del usuario que crea el desafío.
+\end{itemize}
 
-\textbf{Nótese que esto último no se encuentra implementado actualmente, pero sí se espera hacerlo como una mejora en la siguiente iteración.}
+
+\textbf{Valor del nonce:} Como estamos usando el modo CTR de AES tenemos que generar un valor nonce que cumpla con que con la misma clave nunca se repita el mismo valor nonce. \\ 
+Actualmente esto no esta pasando pues el valor se genera de forma aleatoria por el sistema operativo. Esto se debe a que no se ha podido implementar en el tiempo hasta la primera entrega.\\
+La implementación usará el número de desafíos totales más uno como valor para el nonce de cada nuevo cifrado. \\ 
+
+
+\textbf{Futuras implementaciones:}\\ 
+La estructura de clases actual está pensada para que las clases que requiran una clave obtengan a través de la clase KeyGen independizando la creación de claves del resto de algoritmos. Para entregas futuras esta clase generará y almacenará claves en una nueva tabla de la base de datos para no depender de las contraseñas de los usuarios y hacer de todo el proceso algo más seguro. 
 
 \section{Autenticación usando MAC}
 
+\newpage
 \section{Anexos}
+\centering
 \subsection{Tablas SQL}
     \label{sec:TablasSQL}
-    Tablas:
+    Código de inicialización del sql
     \begin{figure}[htbp]
         \centering
         % Primera fila de imágenes
@@ -245,7 +261,7 @@ También se ha planteado una \textbf{estructura de cifrado asimétrica} que mant
         \end{minipage}
         \vspace{0.5cm}
         % Segunda fila de imagen (centrada)
-        \begin{minipage}[t]{0.7\textwidth} % Tercio de página
+        \begin{minipage}[t]{0.7\textwidth} 
             \centering
             \includegraphics[width=\textwidth]{images/users.png}
             \captionof{figure}{Tabla de usuarios}
@@ -255,7 +271,14 @@ También se ha planteado una \textbf{estructura de cifrado asimétrica} que mant
 
 \subsection{Funciones Hash}
     \label{sec:funcionesHash}
-    \centering
     \includegraphics[width=0.8\textwidth]{images/HashFunctions.png} 
 
+\subsection{Funciones KeyGen}
+    \label{sec:funcionesKeyGen}
+    \includegraphics[width=\textwidth]{images/KeyGen.png}
+\subsection{Funciones AES}
+    Funciones para el cifrado y descrifrado con AES
+    \label{sec:funcionesAES}
+    \includegraphics[width=\textwidth]{images/encript_AES.png}
+    \includegraphics[width=\textwidth]{images/decript_AES.png}
 \end{document}
