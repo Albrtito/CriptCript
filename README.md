@@ -1,13 +1,13 @@
 # CriptCript
-A simple webapp that implements cibersecurity mechanisms so that it complies
-with the authentication, integrity and confdentiality objectives of the CIA
-triad.
+A simple webapp that implements cibersecurity mechanisms so that it complies with the authentication, integrity and confdentiality objectives of the CIA triad.
 
-This proyect is a fork of the backend builderplate provided by the repo
-https://github.com/jmartinpizarro/backend-builderplate.
-The builderplate gives a basic local deployment structure using docker with two containers, one for the
-database (MariaDB) and another one for the backend (Flask). We have **added a
-third container runnign a python webserver in 'p 8000' for the frontend**.
++ Para más información en como y que mecanismos de seguridad se han implementado
+  ver la memoria `memory/main.pdf` || `compile memory/main.tex`
+
+This proyect is a fork of the backend builderplate provided by the repo:
++ https://github.com/jmartinpizarro/backend-builderplate.
+
+The builderplate gives a basic local deployment structure using docker with two containers, one for the database (MariaDB) and another one for the backend (Flask). We have **added a third container runnign a python webserver in `p 8000` for the frontend**.
 
 ## How to develop and test this proyect / Como hacer desarrollo y testing del proyecto:
 ### Docker compose/ Despliege del docker:
@@ -85,7 +85,7 @@ DESCRIBE <table_name>;
 >   ```sql
 >       SELECT * FROM private_challenges;
 >       SELECT * FROM public_challenges;
->       ```
+>   ```
 >   
 
 #### Interacción con los logs del docker:
@@ -96,7 +96,7 @@ aparecerá en este log.
 
 + Es aquí donde se ha implementado el log para saber que un mensaje se ha cifrado/descifrado
 
-> [!ATENTION]: 
+> [!danger] 
 > Se genera una excepción cuando el número de desafíos públicos o privados es
 > igual a 0. Esta excepción no influye al funcionamiento de la app.
 
@@ -106,35 +106,25 @@ frontend y backend, cada una de estas partes tiene su propia carpeta global en
 el repositorio. 
 
 **Frontend**
-La carpeta del frontend contiene todo lo relacionado con la visualización de la
-web, 'html', 'css', 'javascript'. Los estilos (css) y scripts(Javascripts)
-tienen sus propias subcarpetas, el html se encuentra directamente bajo la
-carpeta frontend debido a que son pocos archivos y es ahí donde se inicializa el
-servidor del frontend. 
+La carpeta del frontend contiene todo lo relacionado con la visualización de la web, `html`, `css`, `javascript`. Los estilos (css) y scripts(Javascripts) tienen sus propias subcarpetas, el html se encuentra directamente bajo la carpeta frontend debido a que son pocos archivos y es ahí donde se inicializa el servidor del frontend. 
 
-Actualmente no hay protección frente a un ataque de búsqueda de urls, cualquiera
-puede acceder a todo el contenido de la carpeta frontend desde la web.
+Actualmente no hay protección frente a un ataque de búsqueda de urls, cualquiera puede acceder a todo el contenido de la carpeta frontend desde la web.
 
 **Backend**
-La carpeta del backend contiene los archivos de 'app.py' y 'requirementes.txt' que recogen la creación de la api e 
-instalación de los requisitos necesarios en el servidor de backend. El resto del
-código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
-+ mariaDB -> Métodos relacionados con la conexión a la DB
+La carpeta del backend contiene los archivos de `app.py` y `requirementes.txt` que recogen la creación de la api e instalación de los requisitos necesarios en el servidor de backend. El resto del código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
++ **mariaDB** -> Métodos relacionados con la conexión a la DB
 
-+ utils -> Clases ocupadas de la autenticación, encriptación, generación de
-claves y hasheado, además del manager ocupado de utilizar todas esas clases para
-cifrar/descifrar y autenticar mensajes 'MessageManager.py'.
++ **utils** -> Clases ocupadas de la autenticación, encriptación, generación de claves y hasheado, además del manager ocupado de utilizar todas esas clases para cifrar/descifrar y autenticar mensajes `MessageManager.py`.
 
 > [!TODO] 
 >Bajo la carpeta clásicos se encuentran clases de cifrado clásico,
 > estas no se han implementado en la app para la primera entrega.
 
-+ unittest -> Clases con test para la verificación del código.
++ **unittest** -> Clases con test para la verificación del código.
 > [!TODO]
 > La primera entrega no ha implementado más que algunos tests para el HMAC.
 
-Finalmente, bajo la carpeta src se encuentran también los archivos
-'<name>_routes.py' que contienen el routeado para la comunicación de la aplicación con el frontend
+Finalmente, bajo la carpeta src se encuentran también los archivos`<name>_routes.py` que contienen el routeado para la comunicación de la aplicación con el frontend
 
 
 ## TODO/IDEA LIST: (Pre final handoff)
