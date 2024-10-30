@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1730242425 "main.xdv" "main.pdf" "main" 1730242425 0
-  "main.xdv" 1730242425 72220 caa03e1b045fed2a095afdc66f449448 "xelatex"
+["xdvipdfmx"] 1730247275 "main.xdv" "main.pdf" "main" 1730247275 0
+  "main.xdv" 1730247275 90672 c52409df5d6f771eb4d7f28a206ff1f0 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1730242424 "main.tex" "main.xdv" "main" 1730242425 0
+["xelatex"] 1730247274 "main.tex" "main.xdv" "main" 1730247275 0
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -102,13 +102,18 @@
   "/usr/local/texlive/2023/texmf-dist/web2c/texmf.cnf" 1677365944 40745 87bb86a62d462f93a1efc6b0c65c872e ""
   "/usr/local/texlive/2023/texmf-var/web2c/xetex/xelatex.fmt" 1698173733 10502841 a836477a86acbc73163c5d05d42790fb ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
-  "main.aux" 1730242425 1710 8b89153567c1f9ebd344ca345cc2ee4f "xelatex"
-  "main.out" 1730242425 1415 acfff2bda3b19f4bcab028d02707fc83 "xelatex"
-  "main.tex" 1730242422 9179 df45cfd95bac693bdb08b22a18b01cbd ""
+  "images/privateChallenge.png" 1730246078 320733 f816a4fde3ba5c7bc89c7c080c897801 ""
+  "images/publicChallenge.png" 1730246146 243363 82d529cec1bc78d46e50c204e9e03ee6 ""
+  "images/users.png" 1730246184 136948 367468c3f33ef22fec2faae2f8e81227 ""
+  "main.aux" 1730247275 2465 0a2cce977fcf8e4971d8097db460af5b "xelatex"
+  "main.out" 1730247275 1492 78786238595d943dc922cd1bbca7ee5f "xelatex"
+  "main.tex" 1730247273 11308 2bb630c7b8ab5e3b69d1655b614969a5 ""
+  "main.toc" 1730247275 699 9ae662a1d37ab501540a4a20539bc09a "xelatex"
   "uc3m.jpg" 1730200258 254783 ac2abf51822d5e9f8581351b014d2e2e ""
   (generated)
   "main.aux"
   "main.log"
   "main.out"
+  "main.toc"
   "main.xdv"
   (rewritten before read)

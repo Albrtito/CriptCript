@@ -685,6 +685,9 @@ INPUT ./uc3m.jpg
 INPUT ./uc3m.jpg
 INPUT ./uc3m.jpg
 OUTPUT main.xdv
+INPUT ./main.toc
+INPUT main.toc
+INPUT main.toc
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
@@ -711,6 +714,16 @@ INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
+OUTPUT main.toc
+INPUT ./images/privateChallenge.png
+INPUT ./images/privateChallenge.png
+INPUT images/privateChallenge.png
+INPUT ./images/publicChallenge.png
+INPUT ./images/publicChallenge.png
+INPUT images/publicChallenge.png
+INPUT ./images/users.png
+INPUT ./images/users.png
+INPUT images/users.png
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmmi9.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmsy9.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex9.tfm

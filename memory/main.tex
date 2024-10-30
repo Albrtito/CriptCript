@@ -30,20 +30,24 @@
         \vspace*{3cm} 
         
         {\LARGE Criptografía y seguridad informática\\[0.5cm]} 
-        {\LARGE G24 - Reporte 1 \\[0.5cm]}
+        {\LARGE G24 - Entregable 1 \\[0.5cm]}
         
         \vspace*{6cm}
         
-        \textbf{Javier Martín Pizarro} \\[0.5cm]
-        \textbf{Alberto Pascau Sáez} \\[0.5cm]
-        \textbf{Raúl Armas Seriña} \\[0.5cm]
+        \textbf{Javier Martín Pizarro: 100495861@alumnos.uc3m.es} \\[0.5cm]
+        \textbf{Alberto Pascau Sáez: 100495775@alumnos.uc3m.es} \\[0.5cm]
+        \textbf{Raúl Armas Seriña: 100495746@alumnos.uc3m.es} \\[0.5cm]
         
-        \vspace*{1cm}
+        \vspace*{3cm}
+        \textbf{GitHub:
+        \href{https://github.com/Albrtito/CriptCript.git}{Albrtito/CriptCript.git}}\\[0.5cm]
+
     \end{center}
 \end{titlepage}
 
 % Eliminamos el índice de contenidos
-%\tableofcontents
+\tableofcontents
+\vspace{2cm}
 %\newpage
 
 
@@ -52,28 +56,78 @@
 
 \subsection{Propósito de la aplicación}
 
-La aplicación simula una página web, levantada en local por el propio usuario, en la que se pueden crear una serie de desafíos (\textit{challenges}) tanto privados como públicos. Dependiendo de qué tipo de sea cada desafío, el flujo interno (de código) será distinto.
-
+La aplicación simula una página web, levantada en local por el propio usuario,
+en la que se pueden crear desafíos criptográficos(\textit{challenges}) con algoritmos de cifrado
+clásico.\\\\
+A la hora de crear un desafío cada usuario podrá elegir el algoritmo con el que
+cifrar su desafío.El objetivo de otros usuarios será resolver que algoritmo de
+cifrado se ha utilizado y el valor de la clave del cifrado; para ayudar en el
+descifrado de desafíos la applicación implementará herramientas de
+criptoanálisis simples.\\
+Cada desafío sera público o privado, dependiendo de la elección que haga su
+autor en su creación.
 \begin{itemize}
     \item \textbf{Desafío público:} cualquier usuario registrado tiene acceso a ellos.
-    \item \textbf{Desafío privado:} solamente pueden ser compartidos con un único usuario. El creador del desafío selecciona al otro usuario que será capaz de verlo.
+    \item \textbf{Desafío privado:} solamente pueden ser compartidos con un
+        único usuario. El creador del desafío selecciona qué usuario será capaz de verlo.
 \end{itemize}
 
-El propósito de esta aplicación es generar un sistema informático que cumpla unos requisitos mínimos. Nótese que a medida que la práctica avance, esta lista podrá verse modificada.:\begin{enumerate}
-    \item El sistema debe de ser capaz de registrar usuarios y que su información confidencial quede correctamente cifrada.
-    \item El sistema debe ser capaz de permitir un inicio de sesión fluido donde se sea capaz de obtener y comparar los datos cifrados de los usuarios de la base de datos con los proporcionados por el cliente.
-    \item El sistema debe de ser capaz de crear y recuperar desafíos cuya información pueda o no estar cifrada.
+El propósito de esta aplicación es generar un sistema informático que cumpla
+unos requisitos mínimos. Nótese que a medida que la práctica avance, esta lista
+podrá verse modificada. Los requisitos para esta primera entregá incluyen las
+necesidades mínimas de la práctica.
+son:\begin{enumerate}
+    \item El sistema debe de ser capaz de registrar y autenticar usuarios.
+        Guardando su información confidencial correctamente cifrada(contraseñas).$\rightarrow$\textbf{Requisito de confidencialidad}
+    \item El sistema debe ser capaz de permitir un inicio de sesión donde se sea capaz de obtener y comparar 
+        los datos cifrados de los usuarios de la base de datos con los proporcionados por el cliente.
+    \item El sistema debe de ser capaz de guardar y recuperar desafíos usando
+        cifrado simétrico/asimétrico. 
+        $\rightarrow$ \textbf{Requisito de confidencialidad}
     \item El sistema debe de ser capaz de permitir a un usuario $A$ leer el desafío creado por el usuario $B$ si este se lo ha compartido.
+    \item El sistema debe de autenticar que los mensajes mandados por usuarios a la
+        base de datos no han sido alterados y son de quien dicen ser $\rightarrow$ \textbf{Requisito de Integridad y
+        Autenticidad}
+    \item Para cumplir con el requisito 5 el sistema ha de implementar alguna
+        forma de MAC o cifrado autenticado
+    \item El sistema debe de ser capaz de mostrar en pantalla todos los
+        desafíos, privados y públicos, específicos para cada usuario.
 \end{enumerate}
 
 \subsection{Estructura interna}
 
 Esta aplicación consta de tres partes fundamentales:
 \begin{itemize}
-    \item Frontend: esencial para la experiencia de usuario. Actua como interfaz entre el cliente y el backend.
-    \item Backend: donde se encuentra la API, hecha en Flask. Todos los mecanismos de cifrado, autenticación, \textit{hasheo} se encuentran en este directorio.
-    \item Base de datos: creada usando MariaDB SQL debido a su simplicidad. La base de datos tiene únicamente dos tablas, \textit{users} y \textit{challenges}.
+    \item \textbf{Frontend:} esencial para la experiencia de usuario. Actua como interfaz entre el cliente y el backend.
+    \item \textbf{Backend:} donde se encuentra la API, implementada usando
+        Flask. Todos los mecanismos de cifrado, autenticación y \textit{hasheo} se encuentran en este directorio.
+    \item \textbf{Base de datos:} creada usando MariaDB SQL debido a su
+        simplicidad. Actualmente la base de datos utiliza 3 tablas
+        \textit{users} ,\textit{private\_challenges} y \textit{public\_challenges}. 
 \end{itemize}
+
+\begin{figure}[h]
+    \centering
+        \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/privateChallenge.png}
+        \caption{Tabla de desafíos privados}
+        \label{fig:Tabla de desafios privados}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/publicChallenge.png}
+        \caption{Tabla de desafíos públicos}
+        \label{fig:Tabla de desafíos públicos}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/users.png}
+    \caption{Tabla usuarios}
+    \label{fig:Tabla de desafios privados}
+\end{figure}
 
 La base del backend y de la base de datos han sido tomadas desde el repositorio Open Source \textbf{backend-builderplate} del alumno y participante en esta práctica Javier Martín, una iniciativa que permite agilizar y automatizar el proceso de levantar una API y una base de datos que complemente a una interfaz de usuario. El código de este proyecto hereda del repositorio original.%
 \footnote{Repositorio original: \url{https://github.com/jmartinpizarro/backend-builderplate}.}
