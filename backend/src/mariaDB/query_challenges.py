@@ -1,4 +1,5 @@
 import logging
+logging.basicConfig(level=logging.DEBUG)
 import mysql.connector
 from src.mariaDB.connection import DATABASE_NAME, get_db_connection
 
@@ -42,7 +43,7 @@ def return_all_public():
 
         if rows:
             return rows
-
+ 
     except mysql.connector.Error as e:
         return [] 
     except Exception as e:
@@ -56,7 +57,7 @@ def return_shared_with_user(user):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        query = "SELECT * FROM private_challenges WHERE shared_user = %s"
+        query = "SELECT * FROM private_challenges WHERE shared_user = %s;"
         cursor.execute(query, (user,))
         rows = cursor.fetchall()
         

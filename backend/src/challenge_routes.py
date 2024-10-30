@@ -131,13 +131,15 @@ def get_private_challenges():
     user_hash = HashManager.create_hash(user) 
     key = KeyGen.key_from_user(user_hash)
 
-    privateChallenges = return_shared_with_user(user)
+    privateChallenges = return_shared_with_user(user_hash)
     response = []
+    if not privateChallenges:
+        raise ValueError("No valid value for private challenges: NONE")
 
     for i in range(0, len(privateChallenges), 1):
         cipheredTitle = privateChallenges[i][1]
         cipheredContent = privateChallenges[i][3]
-        auth_value = publicChallenges[i][4]
+        auth_value = privateChallenges[i][4]
         
         # Check authentication of the message:
         if not MessageManager.auth_verify(auth_value,cipheredTitle+cipheredContent,key):

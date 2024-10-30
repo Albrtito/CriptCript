@@ -24,6 +24,7 @@ services:
       FLASK_ENV: 'development'
       FLASK_DEBUG: 1
     ports:
+      # Puerto 5001 para eveitar errores en MacOS
       - "5001:5000"
     depends_on:
       - mariadb

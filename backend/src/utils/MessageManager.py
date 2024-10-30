@@ -55,7 +55,33 @@ class MessageManager:
         :param ENCRYPTION_TYPE -> Type of algorithm used to cipher
         :return -> Ciphered bytes
         """
-        return AESManager.encript_AES(message, key)
+
+        try: 
+            logging.info
+            (
+                f"""
+                ---------
+                Message being ciphered: {message}
+                Key used: {key}
+                ---------
+                """
+            )
+            ciphered_message = AESManager.encript_AES(message, key)        
+            logging.info
+            (
+                f"""
+                ---------
+                Message ciphered: {ciphered_message}
+                Key used: {key}
+                ---------
+                """
+            )
+            return ciphered_message
+        except:
+            logging.warning("Problem while ciphering a message")
+            raise Exception("Could not cipher message") 
+
+
         
     @staticmethod
     def decipher_message(ciphered_message:bytes,key:str, ENCRIPTION_TYPE = "AES") ->str:
@@ -68,7 +94,31 @@ class MessageManager:
         :param ENCRYPTION_TYPE -> Type of algorithm used to cipher
         :return -> Cleartext string
         """
-        return AESManager.decript_AES(ciphered_message,key)
+
+        try: 
+            logging.info
+            (
+                f"""
+                ---------
+                Message being deciphered: {ciphered_message}
+                Key used: {key}
+                ---------
+                """
+            )
+            message = AESManager.decript_AES(ciphered_message, key)        
+            logging.info
+            (
+                f"""
+                ---------
+                Message deciphered: {message}
+                Key used: {key}
+                ---------
+                """
+            )
+            return message 
+        except:
+            logging.warning("Problem while deciphering a message")
+            raise Exception("Could not decipher message") 
 
     @staticmethod
     def auth_create(ciphered_message:bytes,key:str,AUTH_TYPE = "HMAC") -> bytes:
@@ -80,7 +130,31 @@ class MessageManager:
         :param key -> String value of the key to cipher
         :param AUTH_TYPE -> Type of algorithm used to authenticate
         """
-        return MACManager.create_ciphered_HMAC(ciphered_message,key)
+
+        try: 
+            logging.info
+            (
+                f"""
+                ---------
+                Auth bein created: {ciphered_message}
+                Key used: {key}
+                ---------
+                """
+            )
+            auth = MACManager.create_ciphered_HMAC(ciphered_message, key)        
+            logging.info
+            (
+                f"""
+                ---------
+                Auth created: {auth}
+                Key used: {key}
+                ---------
+                """
+            )
+            return auth 
+        except:
+            logging.warning("Problem while creating auth")
+            raise Exception("Could not create auth for message") 
 
 
 
@@ -95,6 +169,34 @@ class MessageManager:
         :param key -> String value of the key to cipher
         :param AUTH_TYPE -> Type of algorithm used to authenticate
         """
-        return MACManager.verify_ciphered_HMAC(ciphered_message,key, MAC)
+
+        try: 
+            logging.info
+            (
+                f"""
+                ---------
+                Auth bein verified: {MAC}
+                Cipherd message: {ciphered_message}
+                Key used: {key}
+                ---------
+                """
+            )
+            verify = MACManager.verify_ciphered_HMAC(ciphered_message,key, MAC)
+            logging.info
+            (
+                f"""
+                ---------
+                Verified mac: {MAC}
+                Key used: {key}
+                result: {verify}
+                ---------
+                """
+            )
+            return verify 
+
+        except:
+
+            logging.warning("Problem while verifying auth")
+            raise Exception("Could not verify auth for message") 
 
 
