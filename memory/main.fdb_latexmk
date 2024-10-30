@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1730302689 "main.xdv" "main.pdf" "main" 1730302691 0
-  "main.xdv" 1730302689 135264 b9e66ee91c683e68e6deff53a774f8d9 "xelatex"
+["xdvipdfmx"] 1730303937 "main.xdv" "main.pdf" "main" 1730303940 0
+  "main.xdv" 1730303896 149540 d1e41ff42990f718a8b2d363371b6646 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1730302688 "main.tex" "main.xdv" "main" 1730302691 0
+["xelatex"] 1730303894 "main.tex" "main.xdv" "main" 1730303940 0
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -110,10 +110,10 @@
   "images/privateChallenge.png" 1730246078 320733 f816a4fde3ba5c7bc89c7c080c897801 ""
   "images/publicChallenge.png" 1730246146 243363 82d529cec1bc78d46e50c204e9e03ee6 ""
   "images/users.png" 1730246184 136948 367468c3f33ef22fec2faae2f8e81227 ""
-  "main.aux" 1730302689 3598 61c0b18cb55697009c14af0c34fa9815 "xelatex"
-  "main.out" 1730302689 2509 c3a6385281284f87638849b3973e5a82 "xelatex"
-  "main.tex" 1730302685 15108 9014e062c36a1ecb07b39ec028cb5380 ""
-  "main.toc" 1730302689 1350 445e8319268828c606bdb5c7a8514d7b "xelatex"
+  "main.aux" 1730303896 3727 1212939d06425ca6fa5cd76d8719a255 "xelatex"
+  "main.out" 1730303896 2685 8e0296a5b839150d4de8a21502f45f10 "xelatex"
+  "main.tex" 1730303893 16478 1675ee707e4bf3e162f4e39dae36ead3 ""
+  "main.toc" 1730303896 1438 ea462ec8d9aef3b2716371f38e02793c "xelatex"
   "uc3m.jpg" 1730200258 254783 ac2abf51822d5e9f8581351b014d2e2e ""
   (generated)
   "main.aux"

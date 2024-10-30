@@ -171,8 +171,15 @@ autenticar los mensajes con el algoritmo correcto.
     \end{minipage}
 }
 
-%\subsection{Flujo de información}
-
+\subsection{Flujo de código}
+\textbf{A fecha de la primera entrega encontramos el siguiente flujo en el código de la aplicación:} 
+\begin{itemize}
+    \item Se utiliza MessageManager para cifrar y autenticar desafíos públicos o privados que se van a guardar o a cargar desde la base de datos. Esta clase llama a AES y HMAC.
+    \item Se utiliza AES256 con modo CTR para cifrar y descfrar mensajes
+    \item Se utiliza un código de HMAC para autenticar los mensajes
+    \item Utilizamos una clase de hasheo implementando SHA256 para guardar usuarios y sus contraseñas.
+    \item Las clases MessageManger y HashManager son las única que interactuan directamente con las rutas de la API en challenge\_routes.py y user\_routes.py
+\end{itemize}
 
 \section{Autenticación de usuarios}
 \label{sec:autenticacionUsuarios}
@@ -237,7 +244,11 @@ La implementación usará el número de desafíos totales más uno como valor pa
 \textbf{Futuras implementaciones:}\\ 
 La estructura de clases actual está pensada para que las clases que requiran una clave obtengan a través de la clase KeyGen independizando la creación de claves del resto de algoritmos. Para entregas futuras esta clase generará y almacenará claves en una nueva tabla de la base de datos para no depender de las contraseñas de los usuarios y hacer de todo el proceso algo más seguro. 
 
-\section{Autenticación usando MAC}
+\section{Códigos de autenticación(MAC)}
+Los códigos de autenticacion se utilizan para asegurar la integridad y autenticación de los mensajes, para crearlos se utiliza HMAC pues es sencillo de utilizar e implementar. El código implementa la posibilidad de usar tanto ENCRIPT-THEN-MAC como MAC-THEN-ENCRIPT, no obstante nosotros hemos optado por utilizar la segunda\\ 
+La implementacion del HMAC se realiza en la clase MACManager y se utiliza en el MessageManager. La clave utilizada es la misma que la del cifrado. Una vez creado el código se guarda junto al mensaje cifrado en la base de datos para luego poder autenticar el mensaje al traerlo de la base de datos. 
+
+
 
 \newpage
 \section{Anexos}
@@ -277,8 +288,10 @@ La estructura de clases actual está pensada para que las clases que requiran un
     \label{sec:funcionesKeyGen}
     \includegraphics[width=\textwidth]{images/KeyGen.png}
 \subsection{Funciones AES}
-    Funciones para el cifrado y descrifrado con AES
     \label{sec:funcionesAES}
+    Funciones para el cifrado y descrifrado con AES
+    \vspace{0.5cm}
     \includegraphics[width=\textwidth]{images/encript_AES.png}
-    \includegraphics[width=\textwidth]{images/decript_AES.png}
+    \includegraphics[width=\textwidth]{images/decript_AES.png} 
+
 \end{document}
