@@ -128,7 +128,7 @@ def get_private_challenges():
     user = request.args.get("user")
 
     # Get user hash and key from KeyGen class
-    user_hash = HashManager.create_hash(user) 
+    user_hash = HashManager.create_hash(user)
     key = KeyGen.key_from_user(user_hash)
 
     privateChallenges = return_shared_with_user(user_hash)
