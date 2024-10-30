@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1730303937 "main.xdv" "main.pdf" "main" 1730303940 0
-  "main.xdv" 1730303896 149540 d1e41ff42990f718a8b2d363371b6646 "xelatex"
+["xdvipdfmx"] 1730305560 "main.xdv" "main.pdf" "main" 1730305566 0
+  "main.xdv" 1730305560 157660 ae1d9c42a0afcc8071be4d4657911d35 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1730303894 "main.tex" "main.xdv" "main" 1730303940 0
+["xelatex"] 1730305559 "main.tex" "main.xdv" "main" 1730305566 0
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -103,17 +103,23 @@
   "/usr/local/texlive/2023/texmf-dist/web2c/texmf.cnf" 1677365944 40745 87bb86a62d462f93a1efc6b0c65c872e ""
   "/usr/local/texlive/2023/texmf-var/web2c/xetex/xelatex.fmt" 1698173733 10502841 a836477a86acbc73163c5d05d42790fb ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
+  "images/HMAC_create.png" 1730305124 460043 c5f038a3beb05235ece44fa8dc195a29 ""
+  "images/HMAC_verify.png" 1730305132 539001 4ad158d2569e477afa3f5764ae984386 ""
   "images/HashFunctions.png" 1730295494 474078 57ee78bf1bd4a52dffc1ec58f044d6cb ""
   "images/KeyGen.png" 1730302570 598469 21b51e259b1f369e6406e048bb054771 ""
+  "images/MM_Auth_Create.png" 1730305004 688185 88f55c62296790f36216b12228277f6f ""
+  "images/MM_Auth_Verify.png" 1730305014 790800 d3dfad9eb72593ca39813a7bf2e5b67d ""
+  "images/MM_Decipher.png" 1730304996 743257 2328254fffa1cd01a7a36243adf5d2d0 ""
+  "images/MM_cipher.png" 1730304989 705373 5a8e36fbe7bb01facc530dc59b65a637 ""
   "images/decript_AES.png" 1730299852 744684 0a6876fea20a330ffa1cb2ef8405d6c6 ""
   "images/encript_AES.png" 1730299881 724893 30333057e6656c3c85a6a32cc02a440d ""
   "images/privateChallenge.png" 1730246078 320733 f816a4fde3ba5c7bc89c7c080c897801 ""
   "images/publicChallenge.png" 1730246146 243363 82d529cec1bc78d46e50c204e9e03ee6 ""
   "images/users.png" 1730246184 136948 367468c3f33ef22fec2faae2f8e81227 ""
-  "main.aux" 1730303896 3727 1212939d06425ca6fa5cd76d8719a255 "xelatex"
-  "main.out" 1730303896 2685 8e0296a5b839150d4de8a21502f45f10 "xelatex"
-  "main.tex" 1730303893 16478 1675ee707e4bf3e162f4e39dae36ead3 ""
-  "main.toc" 1730303896 1438 ea462ec8d9aef3b2716371f38e02793c "xelatex"
+  "main.aux" 1730305560 4137 d5c60970d9433ad5ec84205beee3ce08 "xelatex"
+  "main.out" 1730305560 2997 0a5d44f95dec5bf7037508bbfb7e100e "xelatex"
+  "main.tex" 1730305544 17358 55791862425f937994c685124ab6d0b3 ""
+  "main.toc" 1730305560 1609 491046e541328a644bc13a737948de83 "xelatex"
   "uc3m.jpg" 1730200258 254783 ac2abf51822d5e9f8581351b014d2e2e ""
   (generated)
   "main.aux"

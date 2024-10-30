@@ -174,7 +174,7 @@ autenticar los mensajes con el algoritmo correcto.
 \subsection{Flujo de código}
 \textbf{A fecha de la primera entrega encontramos el siguiente flujo en el código de la aplicación:} 
 \begin{itemize}
-    \item Se utiliza MessageManager para cifrar y autenticar desafíos públicos o privados que se van a guardar o a cargar desde la base de datos. Esta clase llama a AES y HMAC.
+    \item Se utiliza MessageManager para cifrar y autenticar desafíos públicos o privados que se van a guardar o a cargar desde la base de datos. Esta clase llama a AES y HMAC. La implementación de esta clase se puede encontrar en \hyperref[sec:MessageManagerCode]{anexo 6}.
     \item Se utiliza AES256 con modo CTR para cifrar y descfrar mensajes
     \item Se utiliza un código de HMAC para autenticar los mensajes
     \item Utilizamos una clase de hasheo implementando SHA256 para guardar usuarios y sus contraseñas.
@@ -246,7 +246,8 @@ La estructura de clases actual está pensada para que las clases que requiran un
 
 \section{Códigos de autenticación(MAC)}
 Los códigos de autenticacion se utilizan para asegurar la integridad y autenticación de los mensajes, para crearlos se utiliza HMAC pues es sencillo de utilizar e implementar. El código implementa la posibilidad de usar tanto ENCRIPT-THEN-MAC como MAC-THEN-ENCRIPT, no obstante nosotros hemos optado por utilizar la segunda\\ 
-La implementacion del HMAC se realiza en la clase MACManager y se utiliza en el MessageManager. La clave utilizada es la misma que la del cifrado. Una vez creado el código se guarda junto al mensaje cifrado en la base de datos para luego poder autenticar el mensaje al traerlo de la base de datos. 
+La implementacion del HMAC se realiza en la clase MACManager y se utiliza en el MessageManager. La clave utilizada es la misma que la del cifrado. Una vez creado el código se guarda junto al mensaje cifrado en la base de datos para luego poder autenticar el mensaje al traerlo de la base de datos.\\\\
+El código de la clase MACManager se puede ver en el  \hyperref[sec:HMACCode]{quinto anexo}.
 
 
 
@@ -287,11 +288,30 @@ La implementacion del HMAC se realiza en la clase MACManager y se utiliza en el 
 \subsection{Funciones KeyGen}
     \label{sec:funcionesKeyGen}
     \includegraphics[width=\textwidth]{images/KeyGen.png}
+
 \subsection{Funciones AES}
     \label{sec:funcionesAES}
     Funciones para el cifrado y descrifrado con AES
     \vspace{0.5cm}
     \includegraphics[width=\textwidth]{images/encript_AES.png}
     \includegraphics[width=\textwidth]{images/decript_AES.png} 
+
+\subsection{Funciones HMAC}
+    \label{sec:HMACCode}
+    Funciones de creación y verificación de claves de autenticación HMAC
+    \vspace{0.5cm}
+    \includegraphics[width=\textwidth]{images/HMAC_create.png}
+    \includegraphics[width=\textwidth]{images/HMAC_verify.png} 
+
+
+\subsection{Funciones MessageManager}
+    \label{sec:MessageManagerCode}
+    Funciones de cifrado y autenticación de mensajes
+    \vspace{0.5cm}
+    \includegraphics[width=\textwidth]{images/MM_Decipher.png}
+    \includegraphics[width=\textwidth]{images/MM_cipher.png} 
+    \includegraphics[width=\textwidth]{images/MM_Auth_Create.png} 
+    \includegraphics[width=\textwidth]{images/MM_Auth_Verify.png} 
+
 
 \end{document}
