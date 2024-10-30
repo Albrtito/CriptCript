@@ -1,0 +1,209 @@
+* d82f379 - Wed, 30 Oct 2024 11:53:30 +0100 (6 minutes ago) (HEAD -> feature/Latex-memory, origin/feature/Latex-memory)
+|           Actualización del README - tito
+* a0e7d27 - Wed, 30 Oct 2024 11:42:30 +0100 (17 minutes ago)
+|           Actualización del README - tito
+* d201ad2 - Wed, 30 Oct 2024 01:18:36 +0100 (11 hours ago)
+|           Primera parte de la memoria terminada - tito
+* 6c06a0b - Tue, 29 Oct 2024 23:54:34 +0100 (12 hours ago) (backend)
+|           Added latex main.tex to backend - tito
+* bf4e5e3 - Tue, 29 Oct 2024 22:43:40 +0100 (13 hours ago) (origin/backend)
+|           End of branch: HMAC is implemented. - tito
+* d28ad60 - Tue, 29 Oct 2024 21:16:44 +0100 (15 hours ago)
+|           All files ready for merge - tito
+* 74a3cf3 - Tue, 29 Oct 2024 21:12:47 +0100 (15 hours ago)
+|           Cambios en las siguientes cosas: + Refactor de todo el código para tenerlo organizado y separado por tipo   de módulo + Cambio en la estructura de cifrado. Se utiliza AES desde la clase de   AES, esto lo implemente MessageManager junto ala utenticado con HMAC + Muchos comentarios y notas para implementación posterior y   organización para proximas implementaciones (por ejemplo, de cifrado   autenticado) - tito
+* 4921fb7 - Sat, 26 Oct 2024 11:10:13 +0200 (4 days ago)
+|           Implement frontend fetching - Javier Martin
+* a72fe92 - Sat, 26 Oct 2024 11:09:23 +0200 (4 days ago)
+|           Add GET params retrieval - Javier Martin
+* 3bc1fbe - Sat, 26 Oct 2024 10:24:01 +0200 (4 days ago)
+|           Fix bug, user must be hashed - Javier Martin
+* 09bde85 - Sat, 26 Oct 2024 10:21:10 +0200 (4 days ago)
+|           Implement the route for private challenges - Javier Martin
+* 64eaf8b - Sat, 26 Oct 2024 10:07:22 +0200 (4 days ago)
+|           Implement return_shared_with_user function - Javier Martin
+* 600eedb - Fri, 25 Oct 2024 13:37:57 +0200 (5 days ago)
+|           Update challenges render - Javier Martin
+* 8c5a8a8 - Fri, 25 Oct 2024 13:20:40 +0200 (5 days ago)
+|           Fix bug - Javier Martin
+* d5dd9e9 - Fri, 25 Oct 2024 13:01:48 +0200 (5 days ago)
+|           Fix bug when deciphering, but error when introducing data into response - Javier Martin
+* b839737 - Thu, 24 Oct 2024 20:29:34 +0200 (6 days ago)
+|           Implement deciphering, but it does not work :) - Javier Martin
+* 0d9fb78 - Thu, 24 Oct 2024 19:23:22 +0200 (6 days ago)
+|           Create route for returning all public challenges WITHOUT DECIPHERING - Javier Martin
+* 1d812fa - Thu, 24 Oct 2024 19:22:37 +0200 (6 days ago)
+|           Update queries - Javier Martin
+* e84f13f - Thu, 24 Oct 2024 19:01:43 +0200 (6 days ago)
+|           Update challenge insert routes - Javier Martin
+* 447cf9c - Thu, 24 Oct 2024 19:01:26 +0200 (6 days ago)
+|           Update html ids - Javier Martin
+* 30694ad - Thu, 24 Oct 2024 19:00:58 +0200 (6 days ago)
+|           Update challenges queries for insertion - Javier Martin
+* 5c3d298 - Thu, 24 Oct 2024 18:59:55 +0200 (6 days ago)
+|           Change passwords caracteristics: now they can be duplicated - Javier Martin
+* fd7f058 - Thu, 24 Oct 2024 18:26:30 +0200 (6 days ago)
+|           Implement ciphering when userToShare has a value - Javier Martin
+* a476fe1 - Thu, 24 Oct 2024 18:22:27 +0200 (6 days ago)
+|           Implement ciphering when userToShare is none - Javier Martin
+* 7e8e01c - Thu, 24 Oct 2024 18:21:51 +0200 (6 days ago)
+|           Update dependencies - Javier Martin
+* 72bce43 - Thu, 24 Oct 2024 18:21:37 +0200 (6 days ago)
+|           Change routes - Javier Martin
+* 2fbdc98 - Thu, 24 Oct 2024 18:20:45 +0200 (6 days ago)
+|           Fix minor bugs with encoded - Javier Martin
+* 75998d1 - Thu, 24 Oct 2024 17:28:43 +0200 (6 days ago)
+|           Add CipherManager class in charge of expanding keys, ciphering and deciphering - Javier Martin
+* 6e6158e - Wed, 23 Oct 2024 20:33:23 +0200 (7 days ago)
+|           Add pseudo code insert challenge function - Javier Martin
+* 4615338 - Wed, 23 Oct 2024 20:02:17 +0200 (7 days ago)
+|           Init api challenges create - Javier Martin
+* 21cb37a - Wed, 23 Oct 2024 19:57:10 +0200 (7 days ago)
+|           Add frontend for creating challenges - Javier Martin
+* 38919d6 - Wed, 23 Oct 2024 19:47:54 +0200 (7 days ago)
+|           Add logIn secs - Javier Martin
+* 8d7fc30 - Wed, 23 Oct 2024 19:42:03 +0200 (7 days ago)
+|           Change frontend for optimising thing - Javier Martin
+* c625803 - Wed, 23 Oct 2024 19:37:24 +0200 (7 days ago)
+|           Fix minor bug with log in - Javier Martin
+* 14615cd - Wed, 23 Oct 2024 19:24:49 +0200 (7 days ago)
+|           Add user login functionality. CORS problem - Javier Martin
+* af5c439 - Wed, 23 Oct 2024 19:08:48 +0200 (7 days ago)
+|           Add logIn frontend  user logic - Javier Martin
+* 79f8bbf - Wed, 23 Oct 2024 16:43:55 +0200 (7 days ago)
+|           Add error handler on the frontend - Javier Martin
+* 46f1bdc - Wed, 23 Oct 2024 16:27:42 +0200 (7 days ago)
+|           Add redirection after creating new user - Javier Martin
+* 7bc89be - Wed, 23 Oct 2024 16:25:12 +0200 (7 days ago)
+|           Refactor folders - Javier Martin
+* 741bd60 - Wed, 23 Oct 2024 16:21:23 +0200 (7 days ago)
+|           Init HTTP localhost now runs automatically on index.html - Javier Martin
+* e5eaa66 - Wed, 23 Oct 2024 16:13:42 +0200 (7 days ago) (origin/frontend)
+|           Change enrutation from .js file - Javier Martin
+*   da9564b - Wed, 23 Oct 2024 16:12:01 +0200 (7 days ago)
+|\            Merge branch 'frontend' of github.com:Albrtito/CriptCript into frontend - Javier Martin
+| | *   129b5f0 - Tue, 29 Oct 2024 22:51:16 +0100 (13 hours ago) (refs/stash)
+| | |\            WIP on feature/latex-memory: 840de40 Improve the document, add Hash and AES info - tito
+| | | * 1403d82 - Tue, 29 Oct 2024 22:51:16 +0100 (13 hours ago)
+| | |/            index on feature/latex-memory: 840de40 Improve the document, add Hash and AES info - tito
+| | * 840de40 - Sat, 26 Oct 2024 13:05:31 +0200 (4 days ago)
+| | |           Improve the document, add Hash and AES info - Javier Martin
+| | * 944b531 - Sat, 26 Oct 2024 12:34:26 +0200 (4 days ago)
+| | |           Format everything a little bit - Javier Martin
+| | | * 61df1f9 - Tue, 29 Oct 2024 12:10:32 +0100 (24 hours ago) (main)
+| | | |           Cambios en el parser de main.tex - tito
+| | | *   d3ca978 - Wed, 23 Oct 2024 15:07:01 +0200 (7 days ago) (origin/main)
+| | | |\            Merge pull request #2 from Albrtito/frontend - JAVIER MARTIN PIZARRO
+| | |_|/  
+| |/| |   
+| * | | 65e27c1 - Wed, 23 Oct 2024 15:01:17 +0200 (7 days ago)
+| |\| |           Merge branch 'frontend' of https://github.com/Albrtito/CriptCript into frontend - raularmasserina
+| * | | f4fd025 - Wed, 23 Oct 2024 15:01:09 +0200 (7 days ago)
+| | | |           Update .gitignore - raularmasserina
+| | | * bf9fb20 - Wed, 23 Oct 2024 12:42:06 +0200 (7 days ago)
+| | |/|           Merge pull request #1 from Albrtito/feature/caesar-chiper - JAVIER MARTIN PIZARRO
+| |_|/  
+|/| |   
+* | | 8227c77 - Wed, 23 Oct 2024 12:41:22 +0200 (7 days ago)
+| | |           Add the deciphering method - Javier Martin
+* | | e4c2d5d - Wed, 23 Oct 2024 12:35:41 +0200 (7 days ago)
+| |/            Add Caesar Cipher - Javier Martin
+|/|   
+* |   759ce9a - Thu, 17 Oct 2024 13:48:44 +0200 (13 days ago) (frontend)
+|\ \            Merge branch 'main' of github.com:Albrtito/CriptCript - tito
+| * | d12658e - Thu, 17 Oct 2024 12:16:01 +0200 (13 days ago)
+| | |           Update first section - Javier Martin
+| * | 533a7d5 - Wed, 16 Oct 2024 20:46:07 +0200 (2 weeks ago)
+| | |           Memory update - Javier Martin
+| * | fab8478 - Wed, 16 Oct 2024 19:50:57 +0200 (2 weeks ago)
+| | |           Add latex mem automatization - Javier Martin
+| * | 0ed8272 - Wed, 16 Oct 2024 19:46:04 +0200 (2 weeks ago)
+| | |           Minor format changes: Random shit go - Javier Martin
+* | | 18e7ae7 - Thu, 17 Oct 2024 13:48:30 +0200 (13 days ago)
+|/ /            feature/New Frontend docker at port localhost:8000 - tito
+* | 689466a - Tue, 15 Oct 2024 21:42:42 +0200 (2 weeks ago)
+| |           Python live server additon as the script python_server.py - tito
+* | d577ccf - Tue, 15 Oct 2024 21:19:57 +0200 (2 weeks ago)
+| |           Update rest of the POST method - Javier Martin
+* | 788ddc6 - Tue, 15 Oct 2024 21:13:44 +0200 (2 weeks ago)
+| |           POST example create_user - Javier Martin
+* | d02f5f0 - Tue, 15 Oct 2024 20:25:26 +0200 (2 weeks ago)
+| |           Update PORT for MACos comp - Javier Martin
+* |   5ba600f - Tue, 15 Oct 2024 20:21:59 +0200 (2 weeks ago)
+|\ \            Merge branch 'backend' - tito
+| * | 1a8bc64 - Mon, 14 Oct 2024 12:21:06 +0200 (2 weeks ago)
+| | |           Refactor routes - Javier Martin
+| * | 5624f49 - Mon, 14 Oct 2024 12:20:54 +0200 (2 weeks ago)
+| | |           Remove files for the sake of refactor - Javier Martin
+| * | e8434fe - Mon, 14 Oct 2024 12:19:42 +0200 (2 weeks ago)
+| | |           Minor changes in the docker file (port was in 5001) - Javier Martin
+| * |   e14df31 - Mon, 14 Oct 2024 12:01:10 +0200 (2 weeks ago)
+| |\ \            Merge branch 'refactor/flask-rnrouter' into backend - Javier Martin
+| | * | f5db85b - Mon, 14 Oct 2024 12:00:23 +0200 (2 weeks ago)
+| | | |           End refactor blueprint - Javier Martin
+| | * | b8e7684 - Mon, 14 Oct 2024 11:37:12 +0200 (2 weeks ago)
+| | | |           Change location of /users route - Javier Martin
+| | * | 04e6851 - Mon, 14 Oct 2024 11:34:58 +0200 (2 weeks ago)
+| | | |           Refactor database connection function - Javier Martin
+* | | |   96d6521 - Tue, 15 Oct 2024 20:21:45 +0200 (2 weeks ago)
+|\ \ \ \            Merge branch 'frontend' - tito
+| |/ / /  
+|/| | /   
+| | |/    
+| |/|     
+| * | 632595f - Tue, 15 Oct 2024 12:09:24 +0200 (2 weeks ago)
+| | |           Interfaces básicas de login, registro, creacion de challenges y challenges disponibles - raularmasserina
+| * | 9e16246 - Sat, 12 Oct 2024 19:26:34 +0200 (3 weeks ago)
+| |/            Carpeta de frontend y organizacion de esta - raularmasserina
+* | 43e1c69 - Sat, 12 Oct 2024 20:45:10 +0200 (3 weeks ago)
+| |           Finished feature - tito
+* | cfb853a - Sat, 12 Oct 2024 20:23:12 +0200 (3 weeks ago)
+| |           Reestructure of files, creation of hashmanager and creation of create_user function in UserManger - tito
+* | c080fd3 - Fri, 4 Oct 2024 16:49:43 +0200 (4 weeks ago)
+|/            Probando: Creación de estructura de archivos. Pequeñas funciones de encriptación con hash - tito
+*   a8baa80 - Fri, 20 Sep 2024 10:06:04 +0200 (6 weeks ago)
+|\            Merge pull request #4 from jmartinpizarro/feature/update-backend - JAVIER MARTIN PIZARRO
+| * d552ed7 - Fri, 20 Sep 2024 10:03:53 +0200 (6 weeks ago)
+| |           Update README - Javier Martín
+| * 97d4616 - Fri, 20 Sep 2024 09:58:52 +0200 (6 weeks ago)
+|/            Change logic of the API - Javier Martín
+*   375e0ec - Thu, 19 Sep 2024 10:44:22 +0200 (6 weeks ago)
+|\            Merge pull request #3 from jmartinpizarro/hotfix/refactor-directories - JAVIER MARTIN PIZARRO
+| * 83ff78c - Thu, 19 Sep 2024 10:43:21 +0200 (6 weeks ago)
+| |           Refactor things - Javier Martín
+| * b4fe564 - Thu, 19 Sep 2024 10:42:48 +0200 (6 weeks ago)
+| |           Change docker-compose file due to refactor in the project - Javier Martín
+| * 35355fa - Thu, 19 Sep 2024 10:42:22 +0200 (6 weeks ago)
+| |           Change automatic database SQL creation. Now it just has an user table - Javier Martín
+| * 430f544 - Thu, 19 Sep 2024 10:41:49 +0200 (6 weeks ago)
+|/            Update README - Javier Martín
+* 3a0a754 - Fri, 13 Sep 2024 15:51:49 +0200 (7 weeks ago)
+|           Create DELETE task method - Javier Martin
+* 233e3e8 - Fri, 13 Sep 2024 15:25:44 +0200 (7 weeks ago)
+|           Create GET tasks and POST insert-tasks methods - Javier Martin
+* dadfd12 - Thu, 12 Sep 2024 12:42:45 +0200 (7 weeks ago)
+|           Create main function. - Javier Martin
+* ef9bbcd - Thu, 12 Sep 2024 12:42:20 +0200 (7 weeks ago)
+|           Install requests library - Javier Martin
+* 914725a - Thu, 12 Sep 2024 12:22:47 +0200 (7 weeks ago)
+|           First working response with the DB - Javier Martin
+* 7863ae7 - Thu, 12 Sep 2024 12:22:22 +0200 (7 weeks ago)
+|           Add requirements file - Javier Martin
+* 460cb2c - Thu, 12 Sep 2024 12:22:07 +0200 (7 weeks ago)
+|           Add Dockerfile modifications for the backend - Javier Martin
+* 75cdd57 - Thu, 12 Sep 2024 11:58:14 +0200 (7 weeks ago)
+|           Add .venv to gitignore - Javier Martin
+*   e67176a - Thu, 12 Sep 2024 08:51:35 +0200 (7 weeks ago)
+|\            Merge pull request #1 from jmartinpizarro/feature/mariadb-automated - JAVIER MARTIN PIZARRO
+| * fb0c207 - Thu, 12 Sep 2024 08:50:41 +0200 (7 weeks ago)
+| |           Update README file - Javier Martin
+| * a6ee6b9 - Thu, 12 Sep 2024 08:43:56 +0200 (7 weeks ago)
+| |           Add file for generating the initial db table. - Javier Martin
+| * 92d296f - Thu, 12 Sep 2024 08:43:40 +0200 (7 weeks ago)
+| |           Docker file for automatising the DB generation. This DB is nos persistible - Javier Martin
+| * b634137 - Thu, 12 Sep 2024 08:43:08 +0200 (7 weeks ago)
+|/            Add .gitignore - Javier Martin
+* 03194d2 - Thu, 12 Sep 2024 07:20:28 +0200 (7 weeks ago)
+|           Update README - Javier Martin
+* 98916d5 - Thu, 12 Sep 2024 07:15:11 +0200 (7 weeks ago)
+            Initial commit - JAVIER MARTIN PIZARRO
