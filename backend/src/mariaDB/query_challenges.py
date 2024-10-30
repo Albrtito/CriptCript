@@ -18,7 +18,7 @@ def insert_challenge(hashed_name_challenge:bytes, hash_creator_user:str,
             connection.commit()
         else:
             query = f"INSERT INTO {DATABASE_NAME}.private_challenges(name_challenge, user, content,auth, shared_user) VALUES (%s,%s, %s, %s, %s)"        
-            cursor.execute(query, (hashed_name_challenge, hash_creator_user,hash_content, hashed_shared_user,auth))
+            cursor.execute(query, (hashed_name_challenge, hash_creator_user,hash_content,auth ,hashed_shared_user))
             connection.commit()
 
     except mysql.connector.Error as e:
