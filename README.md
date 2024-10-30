@@ -1,5 +1,5 @@
 # CriptCript
-A simple webapp that implements cibersecurity mechanisms so that it complies with the authentication, integrity and confdentiality objectives of the CIA triad.
+A simple webapp that implements cybersecurity mechanisms so that it complies with the authentication, integrity and confidentiality objectives of the CIA triad.
 
 + Para más información en como y que mecanismos de seguridad se han implementado
   ver la memoria `memory/main.pdf` || `compile memory/main.tex`
@@ -96,7 +96,7 @@ aparecerá en este log.
 
 + Es aquí donde se ha implementado el log para saber que un mensaje se ha cifrado/descifrado
 
-> [!danger] 
+> [!BUG]: BUG 
 > Se genera una excepción cuando el número de desafíos públicos o privados es
 > igual a 0. Esta excepción no influye al funcionamiento de la app.
 
@@ -116,7 +116,7 @@ La carpeta del backend contiene los archivos de `app.py` y `requirementes.txt` q
 
 + **utils** -> Clases ocupadas de la autenticación, encriptación, generación de claves y hasheado, además del manager ocupado de utilizar todas esas clases para cifrar/descifrar y autenticar mensajes `MessageManager.py`.
 
-> [!TODO] 
+> [!TODO]
 >Bajo la carpeta clásicos se encuentran clases de cifrado clásico,
 > estas no se han implementado en la app para la primera entrega.
 
