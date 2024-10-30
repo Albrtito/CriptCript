@@ -139,7 +139,7 @@ def get_private_challenges():
     for i in range(0, len(privateChallenges), 1):
         cipheredTitle = privateChallenges[i][1]
         cipheredContent = privateChallenges[i][3]
-        auth_value = publicChallenges[i][4]
+        auth_value = privateChallenges[i][4]
         
         # Check authentication of the message:
         if not MessageManager.auth_verify(auth_value,cipheredTitle+cipheredContent,key):

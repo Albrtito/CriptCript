@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1730247275 "main.xdv" "main.pdf" "main" 1730247275 0
-  "main.xdv" 1730247275 90672 c52409df5d6f771eb4d7f28a206ff1f0 "xelatex"
+["xdvipdfmx"] 1730296113 "main.xdv" "main.pdf" "main" 1730296114 0
+  "main.xdv" 1730296113 114812 107747878652ac5bb6c96ee071e0721f "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1730247274 "main.tex" "main.xdv" "main" 1730247275 0
+["xelatex"] 1730296112 "main.tex" "main.xdv" "main" 1730296114 0
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -64,10 +64,11 @@
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/atbegshi-ltx.sty" 1667332637 3052 30236f0cc243a8651b82240dfd2e8b9d ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/atveryend-ltx.sty" 1667332637 2462 8ce5f9a9c63002f2c1af03c262cf29af ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/fontenc.sty" 1654720880 5119 4ce42f43368f652f9c9522d943cce8e4 ""
-  "/usr/local/texlive/2023/texmf-dist/tex/latex/base/inputenc.sty" 1654720880 5048 84b05796b49b69e2d4257d537721c960 ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/size11.clo" 1667332637 8464 63bf71cc1214ffdd38288da73a7ca182 ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/ts1cmr.fd" 1667332637 2430 8418b3f1835e588625becbcac4dbce56 ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/base/tuenc.def" 1654720880 26445 9ed4a9401f29cbb58ef6909cd5aec01f ""
+  "/usr/local/texlive/2023/texmf-dist/tex/latex/caption/caption.sty" 1678653221 55778 14d5c99aa26410e440820bb9ea5b8b3a ""
+  "/usr/local/texlive/2023/texmf-dist/tex/latex/caption/caption3.sty" 1678653221 71836 1a735454ad10692452eb2f2fc37f3865 ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty" 1668028059 18450 88279bf67c81e69f8e3f1c1bad1a26c5 ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/local/texlive/2023/texmf-dist/tex/latex/fontspec/fontspec-xetex.sty" 1642282977 162076 2f6d31c4632f2730c57b9c0fda038e15 ""
@@ -102,13 +103,14 @@
   "/usr/local/texlive/2023/texmf-dist/web2c/texmf.cnf" 1677365944 40745 87bb86a62d462f93a1efc6b0c65c872e ""
   "/usr/local/texlive/2023/texmf-var/web2c/xetex/xelatex.fmt" 1698173733 10502841 a836477a86acbc73163c5d05d42790fb ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
+  "images/HashFunctions.png" 1730295494 474078 57ee78bf1bd4a52dffc1ec58f044d6cb ""
   "images/privateChallenge.png" 1730246078 320733 f816a4fde3ba5c7bc89c7c080c897801 ""
   "images/publicChallenge.png" 1730246146 243363 82d529cec1bc78d46e50c204e9e03ee6 ""
   "images/users.png" 1730246184 136948 367468c3f33ef22fec2faae2f8e81227 ""
-  "main.aux" 1730247275 2465 0a2cce977fcf8e4971d8097db460af5b "xelatex"
-  "main.out" 1730247275 1492 78786238595d943dc922cd1bbca7ee5f "xelatex"
-  "main.tex" 1730247273 11308 2bb630c7b8ab5e3b69d1655b614969a5 ""
-  "main.toc" 1730247275 699 9ae662a1d37ab501540a4a20539bc09a "xelatex"
+  "main.aux" 1730296113 2971 ee9d9abd8ea84361ecc772025f06542e "xelatex"
+  "main.out" 1730296113 2004 313e006989b21b1a2acf22d9904afbb7 "xelatex"
+  "main.tex" 1730296112 13189 d0b27b6b5317c5ea429ad81a6ffb2a96 ""
+  "main.toc" 1730296113 1089 b324bda529e2af7ffcaa0646b419db90 "xelatex"
   "uc3m.jpg" 1730200258 254783 ac2abf51822d5e9f8581351b014d2e2e ""
   (generated)
   "main.aux"

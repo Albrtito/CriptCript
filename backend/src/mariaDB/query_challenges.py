@@ -45,7 +45,7 @@ def return_all_public():
 
         if rows:
             return rows
-
+ 
     except mysql.connector.Error as e:
         raise Exception("Error in mysql connector") 
     except Exception as e:

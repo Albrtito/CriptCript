@@ -1,7 +1,9 @@
+%!TEX program = xelatex
+
 \documentclass[a4paper,11pt]{article}
 
 % Paquetes necesarios
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx} % Paquete para manejar imágenes
@@ -13,6 +15,7 @@
 \geometry{left=3cm,right=2.5cm,top=2cm,bottom=2cm}
 \usepackage{float}
 \usepackage{fontspec}
+\usepackage{caption}
 \setmainfont{Times New Roman}
 
 % Configuración del pie de página
@@ -103,92 +106,101 @@ Esta aplicación consta de tres partes fundamentales:
         Flask. Todos los mecanismos de cifrado, autenticación y \textit{hasheo} se encuentran en este directorio.
     \item \textbf{Base de datos:} creada usando MariaDB SQL debido a su
         simplicidad. Actualmente la base de datos utiliza 3 tablas
-        \textit{users} ,\textit{private\_challenges} y \textit{public\_challenges}. 
+        \textit{users} ,\textit{private\_challenges} y
+        \textit{public\_challenges}.Estas tablas se recogen en el
+        \hyperref[sec:TablasSQL]{primer anexo}.  
+\end{itemize}
+La base del backend y de la base de datos han sido tomadas desde el repositorio
+Open Source \textbf{backend-builderplate} del alumno y participante en esta
+práctica Javier Martín, una iniciativa que permite agilizar y automatizar el
+proceso de levantar una API y una base de datos que complemente a una interfaz
+de usuario. La estructura del código de este proyecto hereda del repositorio original.%
+\footnote{Repositorio original:
+\url{https://github.com/jmartinpizarro/backend-builderplate}.}\\
+
+\textbf{El uso de cada parte y su inizialización usando docker se recoge en el
+archivo $README.md$ del repositorio, así como una explicación similar a esta de
+la estructura del proyecto.}\\
+
+\subsubsection{Frontend}
+La carpeta del frontend contiene todo lo relacionado con la visualización de la
+web, `html`, `css`, `javascript`. Los estilos (css) y scripts(Javascripts)
+tienen sus propias subcarpetas, el html se encuentra directamente bajo la
+carpeta frontend debido a que son pocos archivos y es ahí donde se inicializa el
+servidor del frontend. \\
+
+Actualmente no hay protección frente a un ataque de búsqueda de urls, cualquiera puede acceder a todo el contenido de la carpeta frontend desde la web.
+
+\subsubsection{Backend}
+La carpeta del backend contiene los archivos de `app.py` y `requirementes.txt` que recogen la creación de la api e instalación de los requisitos necesarios en el servidor de backend. El resto del código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
+\begin{itemize}
+\item \textbf{mariaDB} $\rightarrow$ Métodos relacionados con la conexión a la DB
+
+\item \textbf{utils} $\rightarrow$ Clases ocupadas de la autenticación, encriptación, generación de claves y hasheado, además del manager ocupado de utilizar todas esas clases para cifrar/descifrar y autenticar mensajes `MessageManager.py`.
+
+\item \textbf{unittest} $\rightarrow$ Collección de test para comprobar que
+    todas las clases funcionan correctamente. Actualmente solo se han
+    implementado test para el HMAC pero se establecerá como objetivo para la
+    segunda entrega crear test para el resto de clases.
 \end{itemize}
 
-\begin{figure}[h]
-    \centering
-        \begin{minipage}{0.4\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/privateChallenge.png}
-        \caption{Tabla de desafíos privados}
-        \label{fig:Tabla de desafios privados}
-    \end{minipage}\hfill
-    \begin{minipage}{0.4\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/publicChallenge.png}
-        \caption{Tabla de desafíos públicos}
-        \label{fig:Tabla de desafíos públicos}
+Finalmente, bajo la carpeta src se encuentran también los archivos
+\textit{name\_routes.py} que contienen el routeado para la comunicación de la aplicación
+con el frontend\\
+
+De estas tres carpetas utils es la que interesa para evaluar los métodos
+criptográficos implementados. Esta carpeta se ha divido según el propósito del
+algoritmo que representa cada clase, creando secciones para algoritmos de
+\textbf{autenticación, encriptación, generación de claves, cifrado autenticado, generación y verificación de hashes y
+cifrados cásicos}. \\
+En sta carpeta también podemos encontrar la clase MessageManager; encargada de cifrar y
+autenticar los mensajes con el algoritmo correcto.\\\\
+
+\fbox{
+    \begin{minipage}[t]{0.8\textwidth}
+        \textbf{NOTA:} Para la primera entrega solo se utilizan las clases de AESManger
+        para cifrar y MACManager para autenticar, no obstante la el flujo información
+        entre clases está ideado para que otros algoritmos puedan se utilizados, incluso
+        algoritmos de cifrado autenticado como fernet.\\
+        Haciendouso de esta estructura para la entrega final, el usuario será
+        capaz de elegir con que algoritmos cifrar
     \end{minipage}
-\end{figure}
+}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/users.png}
-    \caption{Tabla usuarios}
-    \label{fig:Tabla de desafios privados}
-\end{figure}
+%\subsection{Flujo de información}
 
-La base del backend y de la base de datos han sido tomadas desde el repositorio Open Source \textbf{backend-builderplate} del alumno y participante en esta práctica Javier Martín, una iniciativa que permite agilizar y automatizar el proceso de levantar una API y una base de datos que complemente a una interfaz de usuario. El código de este proyecto hereda del repositorio original.%
-\footnote{Repositorio original: \url{https://github.com/jmartinpizarro/backend-builderplate}.}
 
-\begin{verbatim}
-    .
-    ├── backend
-    │   ├── app.py
-    │   ├── Dockerfile
-    │   ├── requirements.txt
-    │   └── src
-    │       ├── challenge_routes.py
-    │       ├── mariaDB
-    │       │   ├── connection.py
-    │       │   ├── query_challenges.py
-    │       │   └── query_users.py
-    │       ├── user_routes.py
-    │       └── utils
-    │           ├── ChallengeManager.py
-    │           ├── CipherManager.py
-    │           └── HashManager.py
-    ├── db_data
-    ├── docker-compose.yml
-    ├── frontend
-    │   ├── challengecreate.html
-    │   ├── challenges.html
-    │   ├── Dockerfile
-    │   ├── index.html
-    │   ├── newuser.html
-    │   ├── scripts
-    │   │   ├── challenges.js
-    │   │   ├── createChallenge.js
-    │   │   ├── loginsr.js
-    │   │   ├── main.js
-    │   │   ├── newusersr.js
-    │   │   └── settingssr.js
-    │   ├── settings.html
-    │   └── styles
-    │       └── styles.css
-    ├── init.sql
-    ├── memory
-    │   ├── main.pdf
-    │   ├── main.tex
-    │   └── uc3m.jpg
-    └── README.md
-\end{verbatim}
-
-El código anterior enseña en forma de árbol la estructura del proyecto. Las funciones de cifrado, \textit{hasheo} y demás se pueden encontrar en la carpeta de \textbf{utils}. Las rutas de la API se encuentran dentro de la carpeta \textbf{api}.
-
-Nótese que la carpeta \textbf{db\_data} es generada automáticamente a la hora de levantar el proyecto. Se necesitan permisos de administrador para eliminarla, ya que ahí se encuentran los datos de la propia base de datos (existe permanencia de datos incluso si cerramos el contenedor de Docker). Para levantar su proyecto en local, recomendamos que se lea las instrucciones del archivo \textit{README.md}.
-    
-\section{Autenticación de usuarios. Algoritmia}
+\section{Autenticación de usuarios}
 \label{sec:autenticacionUsuarios}
-Durante el registro de los usuarios, tanto el usuario como la contraseña de este son \textit{hasheados} e introducidos en la base de datos. Esto supone ciertos problemas, ya que un \textit{hash} es unidireccional y no podemos recuperar el valor original de dicho \textit{hash}. A pesar de eso, sabemos que dado un mismo texto, siempre obtendremos el mismo resultado tal que:
+Durante el registro de los usuarios, tanto el usuario como la contraseña de este
+son \textit{hasheados} e introducidos en la base de datos.Esto asegura que nunca
+se guardarán contraseñas o nombres de usuario en texto plano, manteniendo la
+confidencialidad de dicha contraseña y usuario fuera del alcance de atacantes.
+\\
+Este método de guardado permite que comprobemos la autenticidad de un usuario o
+contraseña a traves de una comparación de igual con el hash que tenemos
+guardado. Sabemos que dado el mismo texto en claro debemos siempre de obtener el
+mismo Hash.
 $$H(M) = Hash$$
 
-Ergo, a la hora de iniciar sesión o trabajar con los usuarios en la base de datos, deberemos hacer un \textit{hash} para más tarde compararlo. Si dicho \textit{hash} es igual al esperado, podremos trabajar con él, autenticando que es el usuario introducido es el correcto.
+Entonces, a la hora de iniciar sesión o trabajar con los usuarios en la base de datos, deberemos hacer un \textit{hash} para más tarde compararlo. Si dicho \textit{hash} es igual al esperado, podremos trabajar con él, autenticando que es el usuario introducido es el correcto.
 
 Por supuesto, siempre existe el riesgo de las \textbf{colisiones} tal que $H(M) = H'(M) = \text{colisión}$, pero es algo que es complicado que ocurra, ya que las funciones resumen están diseñadas para minimizar estos posibles errores.
 
-\section{Explicación del cifrado usado y su algoritmia}
+
+\subsection{Implementación con SHA256}
+
+La implementación del hasheado de usuarios se ha hecho utilizando la librería
+\textit{hashlib} de python. Esta libreria ofrece multitud de funciones hash, de
+las que hemos elegido SHA256 debido a que es una de las más seguras
+actualmente.\\\\
+El código que permite tanto crear como verificar hashes se encuentra en la clase
+\textit{HashManager} con direccion
+\textit{./backend/src/utils/HashManger.py}.Capturas de las funciones de creación y
+verificación se encuentran en el \hyperref[sec:funcionesHash]{segundo anexo}
+
+
+\section{Cifrado y descifrado de mensajes}
 Para el cifrado de los mensajes y otros datos importantes se ha decantado por un cifrado simétrico, específicamente \textit{AES128}. Para mantener una estructura de código simple y eficiente, se ha desarrollado una clase \textit{CipherManager} que incorpora varios métodos, de especial importancia:
 \begin{itemize}
     \item hkdf\_expand: usada para expandir \textit{hashes}.
@@ -213,12 +225,37 @@ También se ha planteado una \textbf{estructura de cifrado asimétrica} que mant
 
 \section{Autenticación usando MAC}
 
-\section{Anexo}
-Este manuscrito y su correspondiente práctica ha sido realizado por:
-\begin{itemize}
-    \item Javier Martín Pizarro, 100495861@alumnos.uc3m.es
-    \item Alberto Pascau Núñez, 100xxxxxx@alumnos.uc3m.es
-    \item Raúl Armas Seriña, 100xxxxxx@alumnos.uc3m.es
-\end{itemize}
+\section{Anexos}
+\subsection{Tablas SQL}
+    \label{sec:TablasSQL}
+    Tablas:
+    \begin{figure}[htbp]
+        \centering
+        % Primera fila de imágenes
+        \begin{minipage}[t]{0.48\textwidth} % Tercio de página
+            \centering
+            \includegraphics[width=\textwidth]{images/privateChallenge.png}
+            \captionof{figure}{Tabla de desafíos privados}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.48\textwidth} % Tercio de página
+            \centering
+            \includegraphics[width=\textwidth]{images/publicChallenge.png}
+            \captionof{figure}{Tabla de desafíos públicos}
+        \end{minipage}
+        \vspace{0.5cm}
+        % Segunda fila de imagen (centrada)
+        \begin{minipage}[t]{0.7\textwidth} % Tercio de página
+            \centering
+            \includegraphics[width=\textwidth]{images/users.png}
+            \captionof{figure}{Tabla de usuarios}
+        \end{minipage}
+    \end{figure}
+
+
+\subsection{Funciones Hash}
+    \label{sec:funcionesHash}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/HashFunctions.png} 
 
 \end{document}
