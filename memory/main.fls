@@ -693,9 +693,9 @@ INPUT main.out
 INPUT ./main.out
 INPUT ./main.out
 OUTPUT main.out
-INPUT ./uc3m.jpg
-INPUT ./uc3m.jpg
-INPUT ./uc3m.jpg
+INPUT ./images/uc3m.jpg
+INPUT ./images/uc3m.jpg
+INPUT ./images/uc3m.jpg
 OUTPUT main.xdv
 INPUT ./main.toc
 INPUT main.toc

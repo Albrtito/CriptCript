@@ -1,8 +1,8 @@
 db_data
 .venv
 .idea
-main.aux
-main.log
-main.out
-main.toc
+main.*
+!main.tex
+!main.pdf
+!main.py
 __pycache__
