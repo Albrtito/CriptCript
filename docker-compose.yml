@@ -4,7 +4,7 @@ services:
 
   mariadb:
     image: mariadb:latest
-    container_name: backend_builderplate
+    container_name: criptcript_db
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: backend_db
@@ -18,11 +18,25 @@ services:
 
   flask:
     build: ./backend
-    container_name: flask_server
+    container_name: cript_server
     environment:
       FLASK_APP: 'app.py'
       FLASK_ENV: 'development'
+      FLASK_DEBUG: 1
     ports:
-      - "5000:5000"
+      # Puerto 5001 para eveitar errores en MacOS
+      - "5001:5000"
     depends_on:
       - mariadb
+
+  frontend:
+    build: ./frontend/  # Assumes your frontend code is in a ./frontend directory
+    container_name: cript_frontend
+    volumes:
+      - ./frontend/:/app
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    command: python -m http.server 8000
+    stop_grace_period: 1s
+

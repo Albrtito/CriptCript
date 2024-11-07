@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Challenges</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+
+</head>
+
+
+<body>
+    <div  class="container_row">
+        <button id="ajustes" onclick="window.location.href='settings.html'">Ajustes</button>
+        <button id="crear" onclick="window.location.href='challengecreate.html'">Crear Desafío</button>
+    </div>
+    <h1>DESAFÍOS</h1>
+
+    <section class="container_row">
+        <div class="container_column">
+            <h3>Desafíos privados</h3>
+            <div id="private-challenges"></div>
+        </div>
+    
+        <div class="container_column">
+            <h3>Desafíos públicos</h3>
+            <div id="public-challenges"></div>
+        </div>
+    </section>    
+</body>
+<script type="module" src="./scripts/challenges.js"></script>
+</html>

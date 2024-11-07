@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Challenges</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+
+</head>
+
+
+<body>
+<h1>CHALLENGES</h1>
+<p>Todos los mensajes estarán cifrados en cifrado Caesar... ¡Te toca crearlos!</p>
+<label for="title">Título de tu challenge</label>
+<input type="text" placeholder="MamaMia Pizzeria" id="title" name="title">
+<label for="challenge">Mensaje a cifrar</label>
+<textarea id="challenge" name="challenge" rows="10" cols="50" placeholder="Escribe aquí...">
+</textarea>
+    <div class="container_row">
+        <div class="container_column">
+            <div class="container_row">
+                <label for="user">Enviar a:</label>
+                <input type="text" id ="user" name="user" required>
+            </div>
+            <button class="type1 button" id="send-button">Enviar</button>
+            <p>Si no ponen nada en el input (para enviárselo a alguien), el challenge será público!</p>
+        </div>
+</div>
+
+
+<div class="container_column" style="margin-top: 2rem;">
+    <button  onclick="window.location.href='challenges.html'">Volver</button>
+</div>
+
+<script type="module" src="./scripts/createChallenge.js"></script>
+</body>
+</html>
