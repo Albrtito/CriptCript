@@ -1,6 +1,8 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import os
 
+from src.utils.keys import KeyGen
+
 # TODO: Se podría pensar en hacer que esta clase tuviese el cifrado directamente
 # implementado al crear la clase, de esta forma se crearía un instance de la calse para cada cifrado.
 class AESManager:
@@ -20,7 +22,7 @@ class AESManager:
         pass
 
     @staticmethod
-    def encript_AES(data: str, key: str,nonce = os.urandom(16)) -> bytes:
+    def encript_AES(data: str, key: str, nonce=KeyGen.new_nonce())-> bytes:
         """
         Encrypts the data with the key using AES
         :param data: The data to be encrypted

@@ -11,7 +11,9 @@
 
 #NOTE: Esta clase también ha de asegurar que las claves son de la longitud deseada
 
+import hashlib
 from src.mariaDB.query_users import get_user_password
+from src.mariaDB.query_challenges import get_len_challenges
 
 def key_from_user(user: str, length = 256) -> str:
     """
@@ -38,4 +40,27 @@ def key_from_user(user: str, length = 256) -> str:
     else:
         raise TypeError("The key doesn't have a valid size")
 
+def new_nonce() -> bytes:
+    """
+    This function generates a new nonce for AES encription.
+    It ensures that this nonce has never been used and has a len of 16 bytes. 
+    To prevent repeating when the len of the challenges is greater than 16 we can perform a hash. 
+    :return -> Nonce value (16 bytes)
+    """
+    #TODO: We could try to implement another hashing with only 16 bytes to prevent collisions
+    # A XOR between both 36 half hashes could also be implemented to try and
+    #prevent collisions.
+
+    # Convert the the len of the challenges tables to string and encode to bytes
+    count_bytes = str(get_len_challenges()).encode('utf-8')
+    
+    # Create SHA-256 hash
+    hash_obj = hashlib.sha256(count_bytes)
+    
+    # Get the first 16 bytes of the hash.And return it.
+    # NOTE: We perform a digest to obtain the raw bytes
+
+    return hash_obj.digest()[:16]
+
+    
 
