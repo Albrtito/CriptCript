@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from src.user_routes import users_bp
-from src.challenge_routes import challenges_bp
+from src.routes.user_routes import users_bp
+from src.routes.challenge_routes import challenges_bp
 app = Flask(__name__)
 CORS(app)
 
