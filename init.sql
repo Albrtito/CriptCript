@@ -1,3 +1,5 @@
+GRANT ALL PRIVILEGES ON *.* TO 'admin@localhost.com'@'%' IDENTIFIED BY '1234' WITH GRANT OPTION;
+
 CREATE DATABASE IF NOT EXISTS backend_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_general_ci;
@@ -50,4 +52,3 @@ CREATE TABLE IF NOT EXISTS digital_signatures(
     content BLOB NOT NULL,
     signature BLOB NOT NULL -- firma del mensaje. Cuando recuperemos el mensaje, vendremos a esta base de datos y sacaremos la firma para luego trabajar con ella
 );
-
