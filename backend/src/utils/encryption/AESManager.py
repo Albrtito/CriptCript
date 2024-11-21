@@ -33,7 +33,10 @@ class AESManager:
         """
         
         # Convert the data and key to bytes
-        data_bytes = data.encode()
+        if type(data) == str:
+            data_bytes = data.encode()
+        else: # if we need to cipher some data in bytes (e.g. private key for digital firm)
+            data_bytes = data 
         key_bytes = key.encode()
 
         # Create the AES cipher:
