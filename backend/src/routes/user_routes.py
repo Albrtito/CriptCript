@@ -4,6 +4,7 @@
 
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
+from src.mariaDB.query_digital_firm import insert_secure_keys
 from src.utils.HashManager import HashManager
 from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
 from src.utils.keys import KeyGen
@@ -47,13 +48,14 @@ def create_user():
         private_key_ciphered = MessageManager.cipher_message(private_key, key)
         logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
         
-        private_key_deciphered = MessageManager.decipher_message(private_key_ciphered, key)
-        logging.debug('Digital Sign private deciphered key: %s', private_key_deciphered)
-
-        # En el caso de que el hash no exista devolvemos un mensaje de éxito
-        response = make_response(
-            jsonify({"response": "User created successfully!"}), 201
-        )
+        if insert_secure_keys(hashed_user, private_key_ciphered, public_key):
+            # todo ha salido bien
+            response = make_response(
+                jsonify({"response": "User created successfully!"}), 201
+            )
+        else:
+            # En el caso de que el hash ya exista, devolvemos un error
+            response = make_response(jsonify({"response": "Ups, something went wrong"}), 422)
     else:
         # En el caso de que el hash ya exista, devolvemos un error
         response = make_response(jsonify({"response": "Username already exists"}), 422)
