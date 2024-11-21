@@ -5,6 +5,9 @@
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
 from src.utils.HashManager import HashManager
+from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
+from src.utils.keys import KeyGen
+from src.utils.MessageManager import MessageManager
 from flask import Blueprint
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,6 +40,16 @@ def create_user():
 
     # NOTE: Esta función(insert_user) podría no ser un bool sino devolver un response para tener propagación de errores
     if insert_user(hashed_user, hashed_password):
+        private_key, public_key = generate_rsa_keys()
+        logging.debug('Digital Sign keys generated: public key: %s --- private key: %s', public_key, private_key)
+        logging.debug('Digital sign keys types: public key type: %s --- private key type: %s', type(public_key), type(private_key))
+        key = KeyGen.key_from_user(hashed_user, 256)
+        private_key_ciphered = MessageManager.cipher_message(private_key, key)
+        logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
+        
+        private_key_deciphered = MessageManager.decipher_message(private_key_ciphered, key)
+        logging.debug('Digital Sign private deciphered key: %s', private_key_deciphered)
+
         # En el caso de que el hash no exista devolvemos un mensaje de éxito
         response = make_response(
             jsonify({"response": "User created successfully!"}), 201
