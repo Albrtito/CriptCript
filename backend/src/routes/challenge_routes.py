@@ -77,11 +77,14 @@ def create_challenge():
         cipheredMessage = MessageManager.cipher_message(document, key)
         # Compute the AUTH hash for the whole message
         auth = MessageManager.auth_create(cipheredTitle+cipheredMessage, key)
-   
 
+        private_key = MessageManager.decipher_message(private_ciphered_key, key)
+        logging.debug('create_challenge() --- Deciphered private key %s, type %s', private_key, type(private_key)) # type is string
+        signature = create_signature(private_key, cipheredMessage)
+        logging.debug('create_signature() --- Signature %s, type of signature %s', signature, type(signature)) # type is bytes
         # Insert the challenge into the db
         insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True,auth,hashedUser)
-
+        insert_signature_in_db(cipheredMessage, signature)
         
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
