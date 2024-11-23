@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 # Función para generar el par de claves RSA
 def generate_rsa_keys():
@@ -64,3 +65,34 @@ def create_signature(private_key_pem, message):
     )
 
     return signature
+
+def verify_signature(public_key_pem: str, message: str, signature: bytes) -> bool:
+    """
+    Verifica una firma digital utilizando la clave pública.
+
+    Args:
+        public_key_pem (str): Clave pública en formato PEM como cadena.
+        message (str): Mensaje original.
+        signature (bytes): Firma digital en formato bytes.
+
+    Returns:
+        bool: True si la firma es válida, False si no lo es.
+    """
+    try:
+        # Convertir la clave pública de PEM (cadena) a un objeto usable
+        public_key = load_pem_public_key(public_key_pem.encode())
+
+        # Verificar la firma
+        public_key.verify(
+            signature,
+            message.encode(),  # El mensaje debe estar en formato bytes
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )
+        return True  # La firma es válida
+    except Exception as e:
+        print(f"Error al verificar la firma: {e}")
+        return False  # La firma no es válida
