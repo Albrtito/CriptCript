@@ -10,7 +10,8 @@ from src.mariaDB.query_challenges import (insert_challenge, return_all_public,
 from src.utils.HashManager import HashManager
 from src.utils.keys import KeyGen
 from src.utils.MessageManager import MessageManager
-from src.mariaDB.query_digital_firm import get_private_ciphered_key
+from src.mariaDB.query_digital_firm import get_private_ciphered_key, insert_signature_in_db
+from src.utils.digitalSign.DigitalSignManager import create_signature
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -56,11 +57,13 @@ def create_challenge():
         auth=MessageManager.auth_create(cipheredTitle+cipheredMessage,key)
 
         private_key = MessageManager.decipher_message(private_ciphered_key, key)
-        logging.debug('create_challenge() --- Deciphered private key %s', private_key)
+        logging.debug('create_challenge() --- Deciphered private key %s, type %s', private_key, type(private_key)) # type is string
 
+        signature = create_signature(private_key, cipheredMessage)
+        logging.debug('create_signature() --- Signature %s, type of signature %s', signature, type(signature)) # type is bytes
         # Insert the ciphered challenge into the db
         insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False,auth)
-
+        insert_signature_in_db(cipheredMessage, signature)
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
         )

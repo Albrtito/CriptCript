@@ -44,7 +44,7 @@ def create_signature(private_key_pem, message):
 
     Args:
         private_key_pem (string): Clave privada en formato PEM.
-        message (str): Mensaje que será firmado.
+        message (bytes): Mensaje que será firmado.
 
     Returns:
         bytes: La firma digital generada.
@@ -58,7 +58,7 @@ def create_signature(private_key_pem, message):
 
     # Crear la firma digital
     signature = private_key.sign(
-        message.encode(),  # Convertimos el mensaje a bytes
+        message, 
         padding.PKCS1v15(),  # Esquema de padding
         hashes.SHA256()  # Algoritmo de hash
     )
