@@ -48,6 +48,22 @@ def get_private_ciphered_key(
 
     except Exception as e:
         return []
+    
+def get_public_key(
+    hashed_user: str
+):
+    try:
+        connection = get_digital_sign_db_connection()
+        cursor = connection.cursor()
+        query = f"SELECT public_key FROM {DATABASE_DIGITAL_SIGN_NAME}.secure_keys WHERE username = %s;"
+        cursor.execute(query, (hashed_user,))
+        rows = cursor.fetchall()
+        return rows[0][0] # theorically it just can exist one item here
+    except mysql.connector.Error as e:
+        return []
+
+    except Exception as e:
+        return []
 
 def insert_signature_in_db(
     message: bytes,
