@@ -10,6 +10,7 @@ from src.mariaDB.query_challenges import (insert_challenge, return_all_public,
 from src.utils.HashManager import HashManager
 from src.utils.keys import KeyGen
 from src.utils.MessageManager import MessageManager
+from src.mariaDB.query_digital_firm import get_private_ciphered_key
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -35,8 +36,9 @@ def create_challenge():
 
     # Hash the value of the user to obtain the reference in the db
     hashedUser = HashManager.create_hash(userLogged)
-
-
+    private_ciphered_key = get_private_ciphered_key(hashedUser) # get the ciphered private key of the user for the digital sign
+    logging.debug('%s', private_ciphered_key)
+    logging.debug('Type of private key %s', type(private_ciphered_key))
     # If challenge is public, cypher it with admin password hash
         # NOTE: This is not the best practice. Later on with the implementation
         # of the KeyGen class this will change.
@@ -52,8 +54,9 @@ def create_challenge():
         # Compute an AUTH hash for the whole message:
         #NOTE: Order title+message is important.
         auth=MessageManager.auth_create(cipheredTitle+cipheredMessage,key)
-        
 
+        private_key = MessageManager.decipher_message(private_ciphered_key, key)
+        logging.debug('create_challenge() --- Deciphered private key %s', private_key)
 
         # Insert the ciphered challenge into the db
         insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False,auth)

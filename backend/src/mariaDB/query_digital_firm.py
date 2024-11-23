@@ -35,19 +35,16 @@ def insert_secure_keys(
 
 def get_private_ciphered_key(
     hashed_user: str
-) -> bool:
+):
     try:
         connection = get_digital_sign_db_connection()
         cursor = connection.cursor()
         query = f"SELECT encrypted_private_key FROM {DATABASE_DIGITAL_SIGN_NAME}.secure_keys WHERE username = %s;"
         cursor.execute(query, (hashed_user,))
         rows = cursor.fetchall()
-        if len(rows) > 0:
-            return True
-        else: 
-            return False
+        return rows[0][0] # theorically it just can exist one item here
     except mysql.connector.Error as e:
-        return False
+        return []
 
     except Exception as e:
-        return False
+        return []

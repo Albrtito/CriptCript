@@ -36,4 +36,4 @@ def generate_rsa_keys():
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
 
-    return private_pem, public_pem
+    return private_pem.decode(), public_pem.decode()

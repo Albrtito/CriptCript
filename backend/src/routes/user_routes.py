@@ -42,11 +42,12 @@ def create_user():
     # NOTE: Esta función(insert_user) podría no ser un bool sino devolver un response para tener propagación de errores
     if insert_user(hashed_user, hashed_password):
         private_key, public_key = generate_rsa_keys()
-        logging.debug('Digital Sign keys generated: public key: %s --- private key: %s', public_key, private_key)
+        logging.debug('Digital Sign keys generated: public key: %s  \n--- private key: %s', public_key, private_key)
         logging.debug('Digital sign keys types: public key type: %s --- private key type: %s', type(public_key), type(private_key))
         key = KeyGen.key_from_user(hashed_user, 256)
         private_key_ciphered = MessageManager.cipher_message(private_key, key)
         logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
+        logging.debug('type of private key: %s', type(private_key_ciphered))
         
         if insert_secure_keys(hashed_user, private_key_ciphered, public_key):
             # todo ha salido bien
