@@ -48,3 +48,25 @@ def get_private_ciphered_key(
 
     except Exception as e:
         return []
+
+def insert_signature_in_db(
+    message: bytes,
+    signature: bytes
+):
+    try:
+        connection = get_digital_sign_db_connection()
+        cursor = connection.cursor()
+        query = f"INSERT INTO {DATABASE_DIGITAL_SIGN_NAME}.digital_signatures(content, signature) VALUES (%s, %s)"
+        cursor.execute(
+            query, (message, signature)
+        )
+        connection.commit()
+    except mysql.connector.Error as e:
+        logging.debug(e)
+        return False
+
+    except Exception as e:
+        logging.debug(e)
+        return False
+
+    return True
