@@ -66,7 +66,7 @@ def create_signature(private_key_pem, message):
 
     return signature
 
-def verify_signature(public_key_pem: str, message: str, signature: bytes) -> bool:
+def verify_signature(public_key_pem: str, message: bytes, signature: bytes) -> bool:
     """
     Verifica una firma digital utilizando la clave pública.
 
@@ -85,11 +85,8 @@ def verify_signature(public_key_pem: str, message: str, signature: bytes) -> boo
         # Verificar la firma
         public_key.verify(
             signature,
-            message.encode(),  # El mensaje debe estar en formato bytes
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
+            message,
+            padding.PKCS1v15(),
             hashes.SHA256()
         )
         return True  # La firma es válida
