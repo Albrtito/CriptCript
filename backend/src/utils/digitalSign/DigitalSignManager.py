@@ -37,3 +37,30 @@ def generate_rsa_keys():
     )
 
     return private_pem.decode(), public_pem.decode()
+
+def create_signature(private_key_pem, message):
+    """
+    Crea una firma digital para un mensaje usando una clave privada RSA.
+
+    Args:
+        private_key_pem (bytes): Clave privada en formato PEM.
+        message (str): Mensaje que será firmado.
+
+    Returns:
+        bytes: La firma digital generada.
+    """
+    # Cargar la clave privada desde el formato PEM
+    private_key = serialization.load_pem_private_key(
+        private_key_pem.encode(),
+        password=None,  # Sin contraseña
+        backend=default_backend()
+    )
+
+    # Crear la firma digital
+    signature = private_key.sign(
+        message.encode(),  # Convertimos el mensaje a bytes
+        padding.PKCS1v15(),  # Esquema de padding
+        hashes.SHA256()  # Algoritmo de hash
+    )
+
+    return signature
