@@ -43,7 +43,7 @@ def create_signature(private_key_pem, message):
     Crea una firma digital para un mensaje usando una clave privada RSA.
 
     Args:
-        private_key_pem (bytes): Clave privada en formato PEM.
+        private_key_pem (string): Clave privada en formato PEM.
         message (str): Mensaje que será firmado.
 
     Returns:
