@@ -32,7 +32,6 @@ class AESManager:
         :return: The encrypted data
         """
         
-        # Convert the data and key to bytes
         data_bytes = data.encode()
         key_bytes = key.encode()
 

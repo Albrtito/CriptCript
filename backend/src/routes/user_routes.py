@@ -4,7 +4,11 @@
 
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
+from src.mariaDB.query_digital_firm import insert_secure_keys
 from src.utils.HashManager import HashManager
+from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
+from src.utils.keys import KeyGen
+from src.utils.MessageManager import MessageManager
 from flask import Blueprint
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,10 +41,22 @@ def create_user():
 
     # NOTE: Esta función(insert_user) podría no ser un bool sino devolver un response para tener propagación de errores
     if insert_user(hashed_user, hashed_password):
-        # En el caso de que el hash no exista devolvemos un mensaje de éxito
-        response = make_response(
-            jsonify({"response": "User created successfully!"}), 201
-        )
+        private_key, public_key = generate_rsa_keys()
+        logging.debug('Digital Sign keys generated: public key: %s  \n--- private key: %s', public_key, private_key)
+        logging.debug('Digital sign keys types: public key type: %s --- private key type: %s', type(public_key), type(private_key))
+        key = KeyGen.key_from_user(hashed_user, 256)
+        private_key_ciphered = MessageManager.cipher_message(private_key, key)
+        logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
+        logging.debug('type of private key: %s', type(private_key_ciphered))
+        
+        if insert_secure_keys(hashed_user, private_key_ciphered, public_key):
+            # todo ha salido bien
+            response = make_response(
+                jsonify({"response": "User created successfully!"}), 201
+            )
+        else:
+            # En el caso de que el hash ya exista, devolvemos un error
+            response = make_response(jsonify({"response": "Ups, something went wrong"}), 422)
     else:
         # En el caso de que el hash ya exista, devolvemos un error
         response = make_response(jsonify({"response": "Username already exists"}), 422)

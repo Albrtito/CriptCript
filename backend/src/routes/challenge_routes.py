@@ -10,6 +10,8 @@ from src.mariaDB.query_challenges import (insert_challenge, return_all_public,
 from src.utils.HashManager import HashManager
 from src.utils.keys import KeyGen
 from src.utils.MessageManager import MessageManager
+from src.mariaDB.query_digital_firm import get_private_ciphered_key, insert_signature_in_db, get_public_key, get_signature
+from src.utils.digitalSign.DigitalSignManager import create_signature, verify_signature
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -35,8 +37,9 @@ def create_challenge():
 
     # Hash the value of the user to obtain the reference in the db
     hashedUser = HashManager.create_hash(userLogged)
-
-
+    private_ciphered_key = get_private_ciphered_key(hashedUser) # get the ciphered private key of the user for the digital sign
+    logging.debug('%s', private_ciphered_key)
+    logging.debug('Type of private key %s', type(private_ciphered_key))
     # If challenge is public, cypher it with admin password hash
         # NOTE: This is not the best practice. Later on with the implementation
         # of the KeyGen class this will change.
@@ -52,18 +55,22 @@ def create_challenge():
         # Compute an AUTH hash for the whole message:
         #NOTE: Order title+message is important.
         auth=MessageManager.auth_create(cipheredTitle+cipheredMessage,key)
-        
 
+        private_key = MessageManager.decipher_message(private_ciphered_key, key)
+        logging.debug('create_challenge() --- Deciphered private key %s, type %s', private_key, type(private_key)) # type is string
 
+        signature = create_signature(private_key, cipheredMessage)
+        logging.debug('create_signature() --- Signature %s, type of signature %s', signature, type(signature)) # type is bytes
         # Insert the ciphered challenge into the db
         insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False,auth)
-
+        insert_signature_in_db(cipheredMessage, signature)
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
         )
         return response
 
     else:
+        userToShareHash = HashManager.create_hash(userToShare)
         # Get the key from KeyGen class
         key = KeyGen.key_from_user(hashedUser, 256)
         # Cipher the title and document
@@ -71,11 +78,14 @@ def create_challenge():
         cipheredMessage = MessageManager.cipher_message(document, key)
         # Compute the AUTH hash for the whole message
         auth = MessageManager.auth_create(cipheredTitle+cipheredMessage, key)
-   
 
+        private_key = MessageManager.decipher_message(private_ciphered_key, key)
+        logging.debug('create_challenge() --- Deciphered private key %s, type %s', private_key, type(private_key)) # type is string
+        signature = create_signature(private_key, cipheredMessage)
+        logging.debug('create_signature() --- Signature %s, type of signature %s', signature, type(signature)) # type is bytes
         # Insert the challenge into the db
-        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True,auth,hashedUser)
-
+        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, True,auth,userToShareHash)
+        insert_signature_in_db(cipheredMessage, signature)
         
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
@@ -99,6 +109,7 @@ def get_public_challenges():
     # fields to decipher: title = 1, content = 2, author = 3, where numbers = index in the array
     for i in range(0, len(publicChallenges), 1):  # iterate through every row
         cipheredTitle = publicChallenges[i][1]
+        hashedAuthor = publicChallenges[i][2]
         cipheredContent = publicChallenges[i][3]
         auth_value = publicChallenges[i][4]
         
@@ -109,12 +120,23 @@ def get_public_challenges():
         # problemas
          raise Exception("The message is not authenticated")
 
-        # Decipher the title and content
-        title = MessageManager.decipher_message(cipheredTitle, key)
-        content = MessageManager.decipher_message(cipheredContent, key)
+        # recover the public key of the user
+        public_key = get_public_key(hashedAuthor)
+        logging.debug('public key: %s and its type %s', public_key, type(public_key))
+        # recover the signature from the message
+        signature = get_signature(cipheredContent)
+        logging.debug('signature: %s and its type %s', signature, type(signature))
+        # check the signature
+        if not verify_signature(public_key, cipheredContent, signature):
+            logging.debug('The message %s has a problem with its signature... It will not be shown', i)
+            publicChallenges.pop(i)
+        else:
+            # Decipher the title and content
+            title = MessageManager.decipher_message(cipheredTitle, key)
+            content = MessageManager.decipher_message(cipheredContent, key)
 
-        json = {"title": title, "content": content}
-        response.append(json)
+            json = {"title": title, "content": content}
+            response.append(json)
 
     response = make_response(jsonify({"response": response}), 201)
     return response
@@ -138,6 +160,7 @@ def get_private_challenges():
 
     for i in range(0, len(privateChallenges), 1):
         cipheredTitle = privateChallenges[i][1]
+        hashedAuthor = privateChallenges[i][2]
         cipheredContent = privateChallenges[i][3]
         auth_value = privateChallenges[i][4]
         
@@ -145,13 +168,24 @@ def get_private_challenges():
         if not MessageManager.auth_verify(auth_value,cipheredTitle+cipheredContent,key):
         #TODO: Cambiar la response y hacer que se modifique en el frontend
          raise Exception("The message is not authenticated")
+        # recover the public key of the user
+        public_key = get_public_key(hashedAuthor)
+        logging.debug('public key: %s and its type %s', public_key, type(public_key))
+        # recover the signature from the message
+        signature = get_signature(cipheredContent)
+        logging.debug('signature: %s and its type %s', signature, type(signature))
+        # check the signature
+        logging.debug('Procedding into signature verification')
+        if not verify_signature(public_key, cipheredContent, signature):
+            logging.warning('The message %s has a problem with its signature... It will not be shown', i)
+            privateChallenges.pop(i)
+        else:
+            # Decipher the title and content
+            title = MessageManager.decipher_message(cipheredTitle, key)
+            content = MessageManager.decipher_message(cipheredContent, key)
 
-        # Decipher the title and content
-        title = MessageManager.decipher_message(cipheredTitle,key)
-        content = MessageManager.decipher_message(cipheredContent,key)
-
-        json = {"title": title, "content": content}
-        response.append(json)
+            json = {"title": title, "content": content}
+            response.append(json)
 
     response = make_response(jsonify({"response": response}))
     return response
