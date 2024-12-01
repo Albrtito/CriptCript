@@ -79,3 +79,17 @@ class CertificateManager():
             "private_key_pem": private_key_pem # usada para firmar el certificado
         }
     
+    @staticmethod
+    def sign_certificate(certificate: x509.CertificateBuilder, private_key: rsa.RSAPrivateKey) -> x509.Certificate:
+        """
+        Firma un certificado X.509 con la clave privada proporcionada.
+
+        Args:
+            certificate (x509.CertificateBuilder): Certificado sin firmar.
+            private_key (rsa.RSAPrivateKey): Clave privada para firmar el certificado.
+
+        Returns:
+            x509.Certificate: Certificado X.509 firmado.
+        """
+        signed_certificate = certificate.sign(private_key, SHA256())
+        return signed_certificate
