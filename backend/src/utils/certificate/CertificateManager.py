@@ -84,7 +84,7 @@ class CertificateManager():
         }
     
     @staticmethod
-    def verify_certificate(private_key: rsa.RSAPrivateKey, public_key: rsa.RSAPublicKey, certificate_pem: bytes) -> bool:
+    def verify_certificate(private_key: bytes, public_key: bytes, certificate_pem: bytes) -> bool:
         """
         Verifica si el certificado es válido usando la clave privada y la clave pública proporcionadas.
 
@@ -98,6 +98,9 @@ class CertificateManager():
         """
         # Cargar el certificado desde el formato PEM
         certificate = load_pem_x509_certificate(certificate_pem)
+        private_key = serialization.load_pem_private_key(private_key, password=None, backend=default_backend())
+        public_key = serialization.load_pem_public_key(public_key, backend=default_backend()) # necesitamos cargar de bytes a un objeto RSAKey
+
 
         # Obtener la clave pública del certificado
         certificate_public_key = certificate.public_key()

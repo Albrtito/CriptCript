@@ -7,12 +7,13 @@ import logging
 from flask import Blueprint, Flask, jsonify, make_response, request
 from src.mariaDB.query_challenges import (insert_challenge, return_all_public,
                                           return_shared_with_user)
+from src.utils.certificate.CertificateManager import CertificateManager
 from src.utils.HashManager import HashManager
 from src.utils.keys import KeyGen
 from src.utils.MessageManager import MessageManager
 from src.mariaDB.query_digital_firm import get_private_ciphered_key, insert_signature_in_db, get_public_key, get_signature
 from src.utils.digitalSign.DigitalSignManager import create_signature, verify_signature
-
+from src.mariaDB.query_certificates import get_certificates
 logging.basicConfig(level=logging.DEBUG)
 
 challenges_bp = Blueprint("challenges", __name__)
@@ -122,6 +123,19 @@ def get_public_challenges():
 
         # recover the public key of the user
         public_key = get_public_key(hashedAuthor)
+        certificate = get_certificates(hashed_user)
+        logging.debug("Certificate obtain %s, \n\n %s", type(certificate), certificate)
+        
+        private_ciphered_key_cert = certificate[2]
+        certificate = certificate[3]
+        
+        private_key_cert = MessageManager.decipher_message(private_ciphered_key_cert, key)
+        logging.debug("Private key from the certificate %s, \n\n %s \n", type(certificate), certificate)
+        
+        if not CertificateManager.verify_certificate(private_key_cert.encode(), public_key.encode(), certificate):
+            logging.debug("The message %s was not certified... Woopsie", i)
+            publicChallenges.pop(i)
+        
         logging.debug('public key: %s and its type %s', public_key, type(public_key))
         # recover the signature from the message
         signature = get_signature(cipheredContent)
