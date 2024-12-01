@@ -52,3 +52,18 @@ CREATE TABLE IF NOT EXISTS digital_signatures(
     content BLOB NOT NULL,
     signature BLOB NOT NULL -- firma del mensaje. Cuando recuperemos el mensaje, vendremos a esta base de datos y sacaremos la firma para luego trabajar con ella
 );
+
+CREATE DATABASE IF NOT EXISTS certificates
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_general_ci;
+
+USE certificates;
+
+CREATE TABLE IF NOT EXISTS user_certificates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL, -- Relación con la tabla secure_keys de digital_firm
+    certificate_blob BLOB NOT NULL, -- Certificado completo en formato binario (DER o PEM)
+    FOREIGN KEY (user_id) REFERENCES digital_firm.secure_keys(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
