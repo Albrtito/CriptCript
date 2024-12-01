@@ -1,5 +1,6 @@
 from cryptography import x509
 from cryptography.x509.oid import NameOID
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.hashes import SHA256
@@ -42,9 +43,9 @@ class CertificateManager():
         Returns:
             dict: Diccionario con 'certificate_pem' y 'private_key_pem' en formato PEM.
         """
-        private_key = private_key
+        private_key = serialization.load_pem_private_key(private_key, password=None, backend=default_backend())
 
-        public_key = public_key
+        public_key = serialization.load_pem_public_key(public_key, backend=default_backend()) # necesitamos cargar de bytes a un objeto RSAKey
 
         # Crear sujeto y emisor
         subject = issuer = x509.Name([
@@ -81,21 +82,6 @@ class CertificateManager():
             "certificate_pem": certificate_pem,
             "private_key_pem": private_key_pem # usada para firmar el certificado
         }
-    
-    @staticmethod
-    def sign_certificate(certificate: x509.CertificateBuilder, private_key: rsa.RSAPrivateKey) -> x509.Certificate:
-        """
-        Firma un certificado X.509 con la clave privada proporcionada.
-
-        Args:
-            certificate (x509.CertificateBuilder): Certificado sin firmar.
-            private_key (rsa.RSAPrivateKey): Clave privada para firmar el certificado.
-
-        Returns:
-            x509.Certificate: Certificado X.509 firmado.
-        """
-        signed_certificate = certificate.sign(private_key, SHA256())
-        return signed_certificate
     
     @staticmethod
     def verify_certificate(private_key: rsa.RSAPrivateKey, public_key: rsa.RSAPublicKey, certificate_pem: bytes) -> bool:
