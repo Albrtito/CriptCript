@@ -61,8 +61,8 @@ USE certificates;
 
 CREATE TABLE IF NOT EXISTS user_certificates (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL, -- Relación con la tabla secure_keys de digital_firm
+    user VARCHAR(255) NOT NULL UNIQUE, -- hashed username
     encrypted_private_key BLOB, -- AES256, ciframos esta clave igual que los mensajes (con la contraseña del user)
     certificate_blob BLOB NOT NULL, -- Certificado completo en formato binario (DER o PEM)
-    FOREIGN KEY (user_id) REFERENCES digital_firm.secure_keys(id)
+    FOREIGN KEY (user_id) REFERENCES backend_db.users(user)
 );
