@@ -4,6 +4,9 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.hashes import SHA256
 from datetime import datetime, timezone, timedelta
+from cryptography.x509 import load_pem_x509_certificate
+from cryptography.hazmat.primitives.asymmetric import padding
+
 
 class CertificateManager():
     """
@@ -93,3 +96,51 @@ class CertificateManager():
         """
         signed_certificate = certificate.sign(private_key, SHA256())
         return signed_certificate
+    
+    @staticmethod
+    def verify_certificate(private_key: rsa.RSAPrivateKey, public_key: rsa.RSAPublicKey, certificate_pem: bytes) -> bool:
+        """
+        Verifica si el certificado es válido usando la clave privada y la clave pública proporcionadas.
+
+        Args:
+            private_key (rsa.RSAPrivateKey): Clave privada asociada al certificado.
+            public_key (rsa.RSAPublicKey): Clave pública asociada al certificado.
+            certificate_pem (bytes): Certificado X.509 en formato PEM.
+
+        Returns:
+            bool: True si el certificado es válido, False en caso contrario.
+        """
+        # Cargar el certificado desde el formato PEM
+        certificate = load_pem_x509_certificate(certificate_pem)
+
+        # Obtener la clave pública del certificado
+        certificate_public_key = certificate.public_key()
+
+        # Crear un mensaje de prueba para validar la relación entre claves
+        message = b"test_message_for_certificate_validation"
+
+        try:
+            # Firmar el mensaje con la clave privada
+            signature = private_key.sign(
+                message,
+                padding.PKCS1v15(),
+                SHA256()
+            )
+
+            # Verificar la firma con la clave pública del certificado
+            certificate_public_key.verify(
+                signature,
+                message,
+                padding.PKCS1v15(),
+                SHA256()
+            )
+
+            # Verificar si la clave pública proporcionada coincide con la clave pública del certificado
+            if public_key.public_numbers() == certificate_public_key.public_numbers():
+                return True
+
+        except Exception as e:
+            # Si algo falla, el certificado no es válido
+            print(f"Error al verificar el certificado: {e}")
+
+        return False
