@@ -5,6 +5,8 @@
 from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
 from src.mariaDB.query_digital_firm import insert_secure_keys
+from src.mariaDB.query_certificates import insert_certificate
+from src.utils.certificate.CertificateManager import CertificateManager
 from src.utils.HashManager import HashManager
 from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
 from src.utils.keys import KeyGen
@@ -49,18 +51,39 @@ def create_user():
         logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
         logging.debug('type of private key: %s', type(private_key_ciphered))
         
-        if insert_secure_keys(hashed_user, private_key_ciphered, public_key):
-            # todo ha salido bien
+        if not insert_secure_keys(hashed_user, private_key_ciphered, public_key):
             response = make_response(
-                jsonify({"response": "User created successfully!"}), 201
+                jsonify({"response": "Ups, something went wrong"}), 422
             )
-        else:
-            # En el caso de que el hash ya exista, devolvemos un error
-            response = make_response(jsonify({"response": "Ups, something went wrong"}), 422)
+            return response
+        
+        # create certificate
+        certificate_data = CertificateManager.generate_x509_certificate(
+        common_name=username,
+        public_key=public_key.encode(),
+        private_key=private_key.encode()
+        )
+        
+        # Extraer el certificado y la clave privada en dos variables separadas
+        certificate_pem = certificate_data['certificate_pem']
+        private_key_pem = certificate_data['private_key_pem']
+
+        # Imprimir los tipos de las variables para verificar
+        logging.debug('The admin certificate has been created and signed: %s with type: %s', certificate_pem, type(certificate_pem))  # type should be <bytes>
+        logging.debug('The admin private key has been created: %s with type: %s', private_key_pem, type(private_key_pem))  # type should be <bytes>
+        
+        # insert certificate in database
+        ciphered_private_key_pem = MessageManager.cipher_message(private_key_pem.decode(), key)
+        if not insert_certificate(hashed_user, ciphered_private_key_pem, certificate_pem):
+            response = make_response(
+                jsonify({"response": "Ups, something went wrong"}), 422
+            )
+            return response
+
     else:
         # En el caso de que el hash ya exista, devolvemos un error
         response = make_response(jsonify({"response": "Username already exists"}), 422)
-
+    response = make_response(jsonify({"response": "User was created!"}), 201)
     return response
 
 @users_bp.route('/login_user', methods=['POST'])
