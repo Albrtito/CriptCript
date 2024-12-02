@@ -1,0 +1,320 @@
+%!TEX program = xelatex
+
+\documentclass[a4paper,11pt]{article}
+
+% Paquetes necesarios
+%\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx} % Paquete para manejar imágenes
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{tocbibind}
+\usepackage{geometry}
+\geometry{left=3cm,right=2.5cm,top=2cm,bottom=2cm}
+\usepackage{float}
+\usepackage{fontspec}
+\usepackage{caption}
+\setmainfont{Times New Roman}
+
+% Configuración del pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+% portada
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm} 
+        \includegraphics[width=1\textwidth]{./images/uc3m.jpg}
+        
+        \vspace*{3cm} 
+        
+        {\LARGE Criptografía y seguridad informática\\[0.5cm]} 
+        {\LARGE G24 - Entregable 1 \\[0.5cm]}
+        
+        \vspace*{6cm}
+        
+        \textbf{Javier Martín Pizarro: 100495861@alumnos.uc3m.es} \\[0.5cm]
+        \textbf{Alberto Pascau Sáez: 100495775@alumnos.uc3m.es} \\[0.5cm]
+        \textbf{Raúl Armas Seriña: 100495746@alumnos.uc3m.es} \\[0.5cm]
+        
+        \vspace*{3cm}
+        \textbf{GitHub:
+        \href{https://github.com/Albrtito/CriptCript.git}{Albrtito/CriptCript.git}}\\[0.5cm]
+
+    \end{center}
+\end{titlepage}
+
+% Eliminamos el índice de contenidos
+\tableofcontents
+\vspace{2cm}
+%\newpage
+
+
+% Introducción sin numeración de capítulo
+\section{Propósito de la aplicación. Estructura interna}
+
+\subsection{Propósito de la aplicación}
+
+La aplicación simula una página web, levantada en local por el propio usuario,
+en la que se pueden crear desafíos criptográficos(\textit{challenges}) con algoritmos de cifrado
+clásico.\\\\
+A la hora de crear un desafío cada usuario podrá elegir el algoritmo con el que
+cifrar su desafío.El objetivo de otros usuarios será resolver que algoritmo de
+cifrado se ha utilizado y el valor de la clave del cifrado; para ayudar en el
+descifrado de desafíos la applicación implementará herramientas de
+criptoanálisis simples.\\
+Cada desafío sera público o privado, dependiendo de la elección que haga su
+autor en su creación.
+\begin{itemize}
+    \item \textbf{Desafío público:} cualquier usuario registrado tiene acceso a ellos.
+    \item \textbf{Desafío privado:} solamente pueden ser compartidos con un
+        único usuario. El creador del desafío selecciona qué usuario será capaz de verlo.
+\end{itemize}
+
+El propósito de esta aplicación es generar un sistema informático que cumpla
+unos requisitos mínimos. Nótese que a medida que la práctica avance, esta lista
+podrá verse modificada. Los requisitos para esta primera entregá incluyen las
+necesidades mínimas de la práctica.
+son:\begin{enumerate}
+    \item El sistema debe de ser capaz de registrar y autenticar usuarios.
+        Guardando su información confidencial correctamente cifrada(contraseñas).$\rightarrow$\textbf{Requisito de confidencialidad}
+    \item El sistema debe ser capaz de permitir un inicio de sesión donde se sea capaz de obtener y comparar 
+        los datos cifrados de los usuarios de la base de datos con los proporcionados por el cliente.
+    \item El sistema debe de ser capaz de guardar y recuperar desafíos usando
+        cifrado simétrico/asimétrico. 
+        $\rightarrow$ \textbf{Requisito de confidencialidad}
+    \item El sistema debe de ser capaz de permitir a un usuario $A$ leer el desafío creado por el usuario $B$ si este se lo ha compartido.
+    \item El sistema debe de autenticar que los mensajes mandados por usuarios a la
+        base de datos no han sido alterados y son de quien dicen ser $\rightarrow$ \textbf{Requisito de Integridad y
+        Autenticidad}
+    \item Para cumplir con el requisito 5 el sistema ha de implementar alguna
+        forma de MAC o cifrado autenticado
+    \item El sistema debe de ser capaz de mostrar en pantalla todos los
+        desafíos, privados y públicos, específicos para cada usuario.
+    \item Para cada usuario registrado, el sistema debe de crear un certificado emitido por una entidad $ADMIN$.
+    \item Para cada mensaje, debe de crearse una firma digital que verifique que el mensaje 
+        no ha sido modificado por terceros. $\rightarrow$ \textbf{Requisito de Integridad y Autenticidad}
+\end{enumerate}
+
+\subsection{Estructura interna}
+
+Esta aplicación consta de tres partes fundamentales:
+\begin{itemize}
+    \item \textbf{Frontend:} esencial para la experiencia de usuario. Actua como interfaz entre el cliente y el backend.
+    \item \textbf{Backend:} donde se encuentra la API, implementada usando
+        Flask. Todos los mecanismos de cifrado, autenticación y \textit{hasheo} se encuentran en este directorio.
+    \item \textbf{Base de datos:} creada usando MariaDB SQL debido a su
+        simplicidad. Actualmente la base de datos utiliza 3 bases de datos:
+        mensajes, firma digital y certificados. De esta manera simulamos un entorno lo más independiente
+        posible respecto al resto, aumentando la seguridad de nuestra aplicación. Puede ver un ejemplo en el
+        \hyperref[sec:TablasSQL]{primer anexo}. 
+\end{itemize}
+La base del backend y de la base de datos han sido tomadas desde el repositorio
+Open Source \textbf{backend-builderplate} del alumno y participante en esta
+práctica Javier Martín, una iniciativa que permite agilizar y automatizar el
+proceso de levantar una API y una base de datos que complemente a una interfaz
+de usuario. La estructura del código de este proyecto hereda del repositorio original.%
+\footnote{Repositorio original:
+\url{https://github.com/jmartinpizarro/backend-builderplate}.}\\
+
+\textbf{El uso de cada parte y su inizialización usando docker se recoge en el
+archivo $README.md$ del repositorio, así como una explicación similar a esta de
+la estructura del proyecto.}\\
+
+\subsubsection{Frontend}
+La carpeta del frontend contiene todo lo relacionado con la visualización de la
+web, `html`, `css`, `javascript`. Los estilos (css) y scripts(Javascripts)
+tienen sus propias subcarpetas, el html se encuentra directamente bajo la
+carpeta frontend debido a que son pocos archivos y es ahí donde se inicializa el
+servidor del frontend. \\
+
+Actualmente no hay protección frente a un ataque de búsqueda de urls, cualquiera puede acceder a todo el contenido de la carpeta frontend desde la web.
+
+\subsubsection{Backend}
+La carpeta del backend contiene los archivos de `app.py` y `requirementes.txt` que recogen la creación de la api e instalación de los requisitos necesarios en el servidor de backend. El resto del código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
+\begin{itemize}
+\item \textbf{mariaDB} $\rightarrow$ Métodos relacionados con la conexión a la DB
+
+\item \textbf{utils} $\rightarrow$ Clases ocupadas de la autenticación, encriptación, generación de claves y hasheado, además del manager ocupado de utilizar todas esas clases para cifrar/descifrar y autenticar mensajes `MessageManager.py`. La clase que conforma la firma digital y las funciones de certificados también se pueden encontrar aquí.
+
+\item \textbf{unittest} $\rightarrow$ Collección de test para comprobar que
+    todas las clases funcionan correctamente. Actualmente solo se han
+    implementado test para el HMAC pero se establecerá como objetivo para la
+    segunda entrega crear test para el resto de clases.
+
+\item \textbf{routes} $\rightarrow$ colección de rutas estáticas para la API de 
+    Flask con la que realizaremos ciertas funciones dependiendo de las acciones que
+    realice el usuario desde la interfaz.
+    
+\end{itemize}
+
+De estas cuatro carpetas utils es la que interesa para evaluar los métodos
+criptográficos implementados. Esta carpeta se ha divido según el propósito del
+algoritmo que representa cada clase, creando secciones para algoritmos de
+\textbf{autenticación, encriptación, generación de claves, cifrado autenticado, generación y verificación de hashes y
+cifrados cásicos, firma digital y certificados}. \\
+
+\begin{itemize}
+    \item \textbf{Todos estos algoritmos criptográficos han sido implementados usando la librería de python cryptography}
+\end{itemize}
+
+\vspace{0.5cm}
+\fbox{
+    \begin{minipage}[t]{0.8\textwidth}
+        \textbf{NOTA:} Para la primera entrega solo se utilizan las clases de AESManger
+        para cifrar y MACManager para autenticar, no obstante la estructura de 
+        clases está ideada para que otros algoritmos también puedan se utilizados, incluso
+        algoritmos de cifrado autenticado como fernet.\\
+        Haciendouso de esta estructura para la entrega final, el usuario será
+        capaz de elegir con que algoritmos cifrar
+    \end{minipage}
+}
+
+\subsection{Flujo de código}
+\textbf{A fecha de la primera entrega encontramos el siguiente flujo en el código de la aplicación:} 
+\begin{itemize}
+    \item Se utiliza MessageManager para cifrar y autenticar desafíos públicos o privados que se van a guardar o a cargar desde la base de datos. Esta clase llama a AES y HMAC. La implementación de esta clase se puede encontrar en \hyperref[sec:MessageManagerCode]{anexo 6}.
+    \item Se utiliza AES256 con modo CTR para cifrar y descfrar mensajes
+    \item Se utiliza un código de HMAC para autenticar los mensajes
+    \item Utilizamos una clase de hasheo implementando SHA256 para guardar usuarios y sus contraseñas.
+    \item Las clases MessageManger y HashManager son las única que interactuan directamente con las rutas de la API en challenge\_routes.py y user\_routes.py
+\end{itemize}
+
+\section{Autenticación de usuarios}
+\label{sec:autenticacionUsuarios}
+Durante el registro de los usuarios, tanto el usuario como la contraseña de este
+son \textit{hasheados} e introducidos en la base de datos.Esto asegura que nunca
+se guardarán contraseñas o nombres de usuario en texto plano, manteniendo la
+confidencialidad de la contraseña y nombre del usuario fuera del alcance de atacantes.
+\\
+Este método permite que comprobemos la autenticidad de un usuario o
+contraseña a traves de una comparación de igualdad con el hash que tenemos
+guardado. Sabemos que dado el mismo texto en claro debemos siempre de obtener el
+mismo Hash.
+$$H(M) = Hash$$
+
+Entonces, a la hora de iniciar sesión o trabajar con los usuarios en la base de datos, deberemos hacer un \textit{hash} para más tarde compararlo. Si dicho \textit{hash} es igual al esperado, podremos trabajar con él, autenticando que es el usuario introducido es el correcto.
+
+Por supuesto, siempre existe el riesgo de las \textbf{colisiones} tal que $H(M) = H'(M) = \text{colisión}$, pero es algo que es complicado que ocurra, ya que las funciones resumen están diseñadas para minimizar estos posibles errores.\\ 
+
+En esta primera entrega se han utilizado las contraseñas hasheadas de los usuarios como claves para el cifrado de mensajes de forma asimétrica, más sobre esto y la generación de claves en \hyperref[sec:generacionUsoDeClaves]{el punto 3.1}.
+
+
+\subsection{Implementación con SHA256}
+
+La implementación del hasheado de usuarios se ha hecho utilizando la librería
+\textit{hashlib} de python. Esta libreria ofrece multitud de funciones hash, de
+las que hemos elegido SHA256 debido a que es una de las más seguras
+actualmente.\\\\
+El código que permite tanto crear como verificar hashes se encuentra en la clase
+\textit{HashManager} con direccion
+\textit{./backend/src/utils/HashManger.py}.Capturas de las funciones de creación y
+verificación se encuentran en el \hyperref[sec:funcionesHash]{segundo anexo}
+
+
+\section{Cifrado y descifrado de mensajes:AES256}
+Para el cifrado y decifrado de mensajes entre el backend y la base de datos se ha implementado un \textbf{cifrado simétrico}, específicamente \textbf{AES256} con el modo CTR.\\
+Hemos elegido el modo CTR debido a que:
+\begin{itemize}
+    \item No require generar padding para el mensaje a cifrar
+    \item Solo hace falta una clave y un valor nonce
+    \item El valor del nonce no ha de ser privado sino único, permitiendo que se almacene junto al mensaje cifrado y aumentando la seguridad del cifrado
+\end{itemize}
+
+Las funciones que implementan AES son dos \textit{encript\_AES y decript\_AES} y se encuentran dentro de la clase \textit{AESManager} bajo \textit{./backend/src/utils/auth/AESManager.py}.Las capturas de estas funciones se pueden ver en el \hyperref[sec:funcionesAES]{cuarto anexo}. Ambas funciones requieren una clave y un valor para el nonce, la obtención de estos valores se explica en la siguiente sección \\\\
+Por último, debemos de mencionar el \textbf{método que se utiliza para guardar el valor del nonce}. Sabiendo  que este valor puede ser público lo únimos al texto cifrado una vez realizado el AES, al realizar el descifrado lo primero que hacemos es obtener los primeros 16 bytes del mensaje para usarlos como nonce. 
+
+\subsection{Generación y uso de claves}
+\label{sec:generacionUsoDeClaves}
+La generación y comprobación de claves se realiza dentro de la clase KeyGen. Actualmente esta clase tiene un único método que genera las claves usando las contraseñas hasheadas de los usuarios. No obstante los hashes son demasiado grandes para ser usados en el AES256 pues son de 64bytes, debido a esto el método de generación de claves de KeyGen parte a la mitad el hash del usuario y lo devuelve como clave. La captura de este método se puede ver en el \hyperref[sec:funcionesKeyGen]{tercer anexo}. \\
+
+Diferenciamos entre dos tipos de claves que se generan ambas a partir del hash de la contraseña de un usuario. 
+\begin{itemize}
+\item La clave que se utiliza para cifrar desafíos públicos, que es siempre la misma y se obtiene usando el hash del admin.
+\item La clave que se utiliza para cifrar desafíos privados, que se obtendrá usando el hash del usuario que crea el desafío.
+\end{itemize}
+
+
+\textbf{Valor del nonce:} Como estamos usando el modo CTR de AES tenemos que generar un valor nonce que cumpla con que con la misma clave nunca se repita el mismo valor nonce. \\ 
+Actualmente esto no esta pasando pues el valor se genera de forma aleatoria por el sistema operativo. Esto se debe a que no se ha podido implementar en el tiempo hasta la primera entrega.\\
+La implementación usará el número de desafíos totales más uno como valor para el nonce de cada nuevo cifrado. \\ 
+
+
+\textbf{Futuras implementaciones:}\\ 
+La estructura de clases actual está pensada para que las clases que requiran una clave obtengan a través de la clase KeyGen independizando la creación de claves del resto de algoritmos. Para entregas futuras esta clase generará y almacenará claves en una nueva tabla de la base de datos para no depender de las contraseñas de los usuarios y hacer de todo el proceso algo más seguro. 
+
+\section{Códigos de autenticación(MAC)}
+Los códigos de autenticacion se utilizan para asegurar la integridad y autenticación de los mensajes, para crearlos se utiliza HMAC pues es sencillo de utilizar e implementar. El código implementa la posibilidad de usar tanto ENCRIPT-THEN-MAC como MAC-THEN-ENCRIPT, no obstante nosotros hemos optado por utilizar la segunda\\ 
+La implementacion del HMAC se realiza en la clase MACManager y se utiliza en el MessageManager. La clave utilizada es la misma que la del cifrado. Una vez creado el código se guarda junto al mensaje cifrado en la base de datos para luego poder autenticar el mensaje al traerlo de la base de datos.\\\\
+El código de la clase MACManager se puede ver en el  \hyperref[sec:HMACCode]{quinto anexo}.
+
+
+
+\newpage
+\section{Anexos}
+\centering
+\subsection{Tablas SQL}
+    \label{sec:TablasSQL}
+    Código de inicialización del sql
+    \begin{figure}[htbp]
+        \centering
+        % Primera fila de imágenes
+        \begin{minipage}[t]{0.48\textwidth} % Tercio de página
+            \centering
+            \includegraphics[width=\textwidth]{images/privateChallenge.png}
+            \captionof{figure}{Tabla de desafíos privados}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.48\textwidth} % Tercio de página
+            \centering
+            \includegraphics[width=\textwidth]{images/publicChallenge.png}
+            \captionof{figure}{Tabla de desafíos públicos}
+        \end{minipage}
+        \vspace{0.5cm}
+        % Segunda fila de imagen (centrada)
+        \begin{minipage}[t]{0.7\textwidth} 
+            \centering
+            \includegraphics[width=\textwidth]{images/users.png}
+            \captionof{figure}{Tabla de usuarios}
+        \end{minipage}
+    \end{figure}
+
+
+\subsection{Funciones Hash}
+    \label{sec:funcionesHash}
+    \includegraphics[width=0.8\textwidth]{images/HashFunctions.png} 
+
+\subsection{Funciones KeyGen}
+    \label{sec:funcionesKeyGen}
+    \includegraphics[width=\textwidth]{images/KeyGen.png}
+
+\subsection{Funciones AES}
+    \label{sec:funcionesAES}
+    Funciones para el cifrado y descrifrado con AES
+    \vspace{0.5cm}
+    \includegraphics[width=\textwidth]{images/encript_AES.png}
+    \includegraphics[width=\textwidth]{images/decript_AES.png} 
+
+\subsection{Funciones HMAC}
+    \label{sec:HMACCode}
+    Funciones de creación y verificación de claves de autenticación HMAC
+    \vspace{0.5cm}
+    \includegraphics[width=\textwidth]{images/HMAC_create.png}
+    \includegraphics[width=\textwidth]{images/HMAC_verify.png} 
+
+
+\subsection{Funciones MessageManager}
+    \label{sec:MessageManagerCode}
+    Funciones de cifrado y autenticación de mensajes
+    \vspace{0.5cm}
+    \includegraphics[width=\textwidth]{images/MM_Decipher.png}
+    \includegraphics[width=\textwidth]{images/MM_cipher.png} 
+    \includegraphics[width=\textwidth]{images/MM_Auth_Create.png} 
+    \includegraphics[width=\textwidth]{images/MM_Auth_Verify.png} 
+
+
+\end{document}
