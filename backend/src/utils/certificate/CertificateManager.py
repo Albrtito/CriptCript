@@ -84,6 +84,77 @@ class CertificateManager():
         }
     
     @staticmethod
+    def generate_x509_certificate_for_another_entity(
+        issuer_private_key: bytes,
+        issuer_name: str,
+        subject_name: str,
+        subject_public_key: bytes,
+        country_name: str = "ES",
+        state_name: str = "Madrid",
+        locality_name: str = "Leganés",
+        organization_name: str = "UC3M",
+        valid_days: int = 365,
+    ):
+        """
+        Genera un certificado X.509 para una entidad (subject) firmado por otra entidad (issuer).
+
+        Args:
+            issuer_private_key (bytes): Clave privada del emisor (firma).
+            issuer_name (str): Nombre común del emisor.
+            subject_name (str): Nombre común del sujeto.
+            subject_public_key (bytes): Clave pública del sujeto.
+            country_name (str): Nombre del país (ISO 3166-1). Default: "ES".
+            state_name (str): Nombre del estado/provincia. Default: "Madrid".
+            locality_name (str): Nombre de la localidad. Default: "Leganés".
+            organization_name (str): Nombre de la organización. Default: "UC3M".
+            valid_days (int): Días de validez del certificado. Default: 365.
+
+        Returns:
+            dict: Diccionario con 'certificate_pem' en formato PEM.
+        """
+        # Cargar las claves del emisor y el sujeto
+        issuer_private_key = serialization.load_pem_private_key(issuer_private_key, password=None, backend=default_backend())
+        subject_public_key = serialization.load_pem_public_key(subject_public_key, backend=default_backend())
+
+        # Crear el nombre del emisor y del sujeto
+        issuer = x509.Name([
+            x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_name),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
+            x509.NameAttribute(NameOID.COMMON_NAME, issuer_name),
+        ])
+        subject = x509.Name([
+            x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, state_name),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, locality_name),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
+            x509.NameAttribute(NameOID.COMMON_NAME, subject_name),
+        ])
+
+        # Crear el certificado
+        certificate = x509.CertificateBuilder()\
+            .subject_name(subject)\
+            .issuer_name(issuer)\
+            .public_key(subject_public_key)\
+            .serial_number(x509.random_serial_number())\
+            .not_valid_before(datetime.now(timezone.utc))\
+            .not_valid_after(datetime.now(timezone.utc) + timedelta(days=valid_days))\
+            .add_extension(
+                x509.SubjectAlternativeName([x509.DNSName(subject_name)]),
+                critical=False,
+            )\
+            .sign(issuer_private_key, SHA256())
+
+        # Exportar el certificado
+        certificate_pem = certificate.public_bytes(serialization.Encoding.PEM)
+
+        return {
+            "certificate_pem": certificate_pem,
+        }
+
+    
+    @staticmethod
     def verify_certificate(private_key: bytes, public_key: bytes, certificate_pem: bytes) -> bool:
         """
         Verifica si el certificado es válido usando la clave privada y la clave pública proporcionadas.

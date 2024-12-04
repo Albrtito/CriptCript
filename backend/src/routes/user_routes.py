@@ -14,6 +14,7 @@ from src.utils.MessageManager import MessageManager
 from flask import Blueprint
 import logging
 logging.basicConfig(level=logging.DEBUG)
+from src.mariaDB.query_certificates import get_certificates
 
 users_bp = Blueprint('users', __name__)
 
@@ -40,6 +41,8 @@ def create_user():
     # Hash the user and password before inserting them in the database
     hashed_user = HashManager.create_hash(username)
     hashed_password = HashManager.create_hash(password)
+    
+    hashed_admin = HashManager.create_hash('admin')
 
     # NOTE: Esta función(insert_user) podría no ser un bool sino devolver un response para tener propagación de errores
     if insert_user(hashed_user, hashed_password):
@@ -56,25 +59,25 @@ def create_user():
                 jsonify({"response": "Ups, something went wrong"}), 422
             )
             return response
-        
-        # create certificate
-        certificate_data = CertificateManager.generate_x509_certificate(
-        common_name=username,
-        public_key=public_key.encode(),
-        private_key=private_key.encode()
+                
+        private_emisor_private_key = get_certificates(hashed_admin)[2]
+        admin_key = KeyGen.key_from_user(hashed_admin)
+        emisor_private_key = MessageManager.decipher_message(private_emisor_private_key, admin_key)
+        certificate_data = CertificateManager.generate_x509_certificate_for_another_entity(
+            issuer_private_key= emisor_private_key.encode(),
+            issuer_name= 'ADMIN',
+            subject_name= hashed_user,
+            subject_public_key= public_key.encode(),
         )
         
         # Extraer el certificado y la clave privada en dos variables separadas
         certificate_pem = certificate_data['certificate_pem']
-        private_key_pem = certificate_data['private_key_pem']
 
         # Imprimir los tipos de las variables para verificar
         logging.debug('The admin certificate has been created and signed: %s with type: %s', certificate_pem, type(certificate_pem))  # type should be <bytes>
-        logging.debug('The admin private key has been created: %s with type: %s', private_key_pem, type(private_key_pem))  # type should be <bytes>
         
         # insert certificate in database
-        ciphered_private_key_pem = MessageManager.cipher_message(private_key_pem.decode(), key)
-        if not insert_certificate(hashed_user, ciphered_private_key_pem, certificate_pem):
+        if not insert_certificate(hashed_user, private_emisor_private_key, certificate_pem):
             response = make_response(
                 jsonify({"response": "Ups, something went wrong"}), 422
             )

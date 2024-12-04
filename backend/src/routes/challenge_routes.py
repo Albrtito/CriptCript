@@ -123,13 +123,13 @@ def get_public_challenges():
 
         # recover the public key of the user
         public_key = get_public_key(hashedAuthor)
-        certificate = get_certificates(hashed_user)
+        certificate = get_certificates(hashedAuthor)
         logging.debug("Certificate obtain %s, \n\n %s", type(certificate), certificate)
         
         private_ciphered_key_cert = certificate[2]
         certificate = certificate[3]
-        
-        private_key_cert = MessageManager.decipher_message(private_ciphered_key_cert, key)
+        hashedAuthorKey = KeyGen.key_from_user(hashedAuthor, 256)
+        private_key_cert = MessageManager.decipher_message(private_ciphered_key_cert, hashedAuthorKey)
         logging.debug("Private key from the certificate %s, \n\n %s \n", type(certificate), certificate)
         
         if not CertificateManager.verify_certificate(private_key_cert.encode(), public_key.encode(), certificate):
@@ -184,13 +184,14 @@ def get_private_challenges():
          raise Exception("The message is not authenticated")
         # recover the public key of the user
         public_key = get_public_key(hashedAuthor)
-        certificate = get_certificates(user_hash)
+        certificate = get_certificates(hashedAuthor)
         logging.debug("Certificate obtain %s, \n\n %s", type(certificate), certificate)
         
         private_ciphered_key_cert = certificate[2]
         certificate = certificate[3]
         
-        private_key_cert = MessageManager.decipher_message(private_ciphered_key_cert, key)
+        hashedAuthorKey = KeyGen.key_from_user(hashedAuthor, 256)
+        private_key_cert = MessageManager.decipher_message(private_ciphered_key_cert, hashedAuthorKey)
         logging.debug("Private key from the certificate %s, \n\n %s \n", type(certificate), certificate)
         
         if not CertificateManager.verify_certificate(private_key_cert.encode(), public_key.encode(), certificate):
