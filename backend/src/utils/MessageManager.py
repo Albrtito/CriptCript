@@ -45,7 +45,7 @@ class MessageManager:
         pass
 
     @staticmethod
-    def cipher_message(message:str,key:str,ENCRYPTION_TYPE = "AES") -> bytes:
+    def cipher_message(message:str,key:bytes,ENCRYPTION_TYPE = "AES") -> bytes:
         """
         Cipher a given a message, a key and an algorithm 
         NOTE: See comments in KeyGen for future changes
@@ -84,7 +84,7 @@ class MessageManager:
 
         
     @staticmethod
-    def decipher_message(ciphered_message:bytes,key:str, ENCRIPTION_TYPE = "AES") ->str:
+    def decipher_message(ciphered_message:bytes,key:bytes, ENCRIPTION_TYPE = "AES") ->str:
         """
         Decipher a given message, a key and an algorithm 
         NOTE: See comments in KeyGen for future changes
@@ -121,7 +121,7 @@ class MessageManager:
             raise Exception("Could not decipher message") 
 
     @staticmethod
-    def auth_create(ciphered_message:bytes,key:str,AUTH_TYPE = "HMAC") -> bytes:
+    def auth_create(ciphered_message:bytes,key:bytes,AUTH_TYPE = "HMAC") -> bytes:
         """
         Creates an authentication code for ciphered messages.
         NOTE: Using the ENCRIPT-THEN-MAC approach
@@ -159,7 +159,7 @@ class MessageManager:
 
 
     @staticmethod
-    def auth_verify(MAC:bytes, ciphered_message:bytes, key:str, AUTH_TYPE= "HMAC") -> bool:
+    def auth_verify(MAC:bytes, ciphered_message:bytes, key:bytes, AUTH_TYPE= "HMAC") -> bool:
         """
         Checks the authenticity of a ciphered message
         NOTE: Using the ENCRIPT-THEN-MAC approach

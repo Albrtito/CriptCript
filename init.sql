@@ -65,3 +65,18 @@ CREATE TABLE IF NOT EXISTS user_certificates (
     encrypted_private_key BLOB, -- AES256, ciframos esta clave igual que los mensajes (con la contraseña del user)
     certificate_blob BLOB NOT NULL -- Certificado completo en formato binario (DER o PEM)
 );
+
+-- Base de datos para almacenar las claves de los retos 
+CREATE DATABASE IF NOT EXISTS keys_db 
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_general_ci;
+
+USE  keys_db;
+
+CREATE TABLE IF NOT EXISTS salt_challenges(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ciphered_challenge BLOB NOT NULL, -- reto cifrado 
+    salt BLOB -- salt para el reto (De donde sacamos la clave)
+);
+
+
