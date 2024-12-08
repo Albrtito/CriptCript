@@ -49,7 +49,7 @@ def create_challenge():
 
         # Get user hash and the key from KeyGen class
         adminHash = HashManager.create_hash("admin")
-        key = KeyGen.key_from_user(adminHash, 256)
+        key,salt = KeyGen.key_from_user(adminHash, 256)
         # Cipher the title and the document
         cipheredTitle = MessageManager.cipher_message(title, key)
         cipheredMessage = MessageManager.cipher_message(document, key)
@@ -65,6 +65,7 @@ def create_challenge():
         # Insert the ciphered challenge into the db
         insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False,auth)
         insert_signature_in_db(cipheredMessage, signature)
+        insert_salt_in_db(cipheredMessage,salt)
         response = make_response(
             jsonify({"response": "Challenge has been created!"}), 201
         )
