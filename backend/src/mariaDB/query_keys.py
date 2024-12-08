@@ -33,7 +33,7 @@ def insert_salt_in_db(
 
 def get_salt_from_db(
     ciphered_challenge: bytes,
-) -> bytes|None:
+) -> bytes:
     """
     Given a challenge_id, challenge_type and key_type, returns the key stored
     in the database.
@@ -57,9 +57,10 @@ def get_salt_from_db(
         
         cursor.execute(query, (ciphered_challenge,))
         rows = cursor.fetchall()
-        
-        return rows[0][0] if rows else None
-        
+        if rows:
+            return rows[0][0]  
+        else:
+            raise ValueError("No salt found for the given ciphered challenge")        
     except mysql.connector.Error as e:
         raise ValueError(f"Database error occurred: {str(e)}") from e
     finally:

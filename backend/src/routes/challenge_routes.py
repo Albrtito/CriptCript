@@ -40,90 +40,59 @@ def create_challenge():
     if len(userLogged) == 0:
         response = make_response(jsonify({"response": "There is no user logged"}), 422)
         return response
+    else:
+        # Hash the value of the user to obtain the reference in the db
+        hashedUser = HashManager.create_hash(userLogged)
 
-    # Hash the value of the user to obtain the reference in the db
-    hashedUser = HashManager.create_hash(userLogged)
-    private_ciphered_key = get_private_ciphered_key(
-        hashedUser
-    )  # get the ciphered private key of the user for the digital sign
-    logging.debug("%s", private_ciphered_key)
-    logging.debug("Type of private key %s", type(private_ciphered_key))
-    # If challenge is public, cypher it with admin password hash
-    # NOTE: This is not the best practice. Later on with the implementation
-    # of the KeyGen class this will change.
-
-    if len(userToShare) == 0:
-
+        # ENCRIPTION
         # Get user hash and the key from KeyGen class
-        adminHash = HashManager.create_hash("admin")
-        key, salt = KeyGen.key_from_user(adminHash, 256)
+        key, salt = KeyGen.key_from_user(hashedUser)
         # Cipher the title and the document
         cipheredTitle = MessageManager.cipher_message(title, key)
         cipheredMessage = MessageManager.cipher_message(document, key)
-        # Compute an AUTH hash for the whole message:
-        # NOTE: Order title+message is important.
+
+        # AUTHENTICATION
         auth = MessageManager.auth_create(cipheredTitle + cipheredMessage, key)
-        # Decipher the private key
+
+        # SIGNATURE
+        private_ciphered_key = get_private_ciphered_key(hashedUser)
+        # Debugging
+        logging.debug("%s", private_ciphered_key)
+        logging.debug("Type of private key %s", type(private_ciphered_key))
+        # Ge the salt referenced to the private key
         signed_salt = get_salt_from_db(private_ciphered_key)
-        sign_key,signed_salt = KeyGen.key_from_user(hashedUser, 256, signed_salt)
+        sign_key, signed_salt = KeyGen.key_from_user(hashedUser, 256, signed_salt)
         private_key = MessageManager.decipher_message(private_ciphered_key, sign_key)
         logging.debug(
             "create_challenge() --- Deciphered private key %s, type %s",
             private_key,
             type(private_key),
         )  # type is string
-
         signature = create_signature(private_key, cipheredMessage)
         logging.debug(
             "create_signature() --- Signature %s, type of signature %s",
             signature,
             type(signature),
         )  # type is bytes
-        # Insert the ciphered challenge into the db
-        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False, auth)
-        insert_signature_in_db(cipheredMessage, signature)
-        # Insert the salt into the keys db
-        insert_salt_in_db(cipheredMessage, salt)
-        response = make_response(
-            jsonify({"response": "Challenge has been created!"}), 201
-        )
-        return response
 
+    # SAVING:
+    # Insert the ciphered challenge into the db.
+    if len(userToShare) == 0:
+        insert_challenge(cipheredTitle, hashedUser, cipheredMessage, False, auth)
     else:
         userToShareHash = HashManager.create_hash(userToShare)
-        # Get the key from KeyGen class
-        key, salt = KeyGen.key_from_user(hashedUser, 256)
-        # Cipher the title and document
-        cipheredTitle = MessageManager.cipher_message(title, key)
-        cipheredMessage = MessageManager.cipher_message(document, key)
-        # Compute the AUTH hash for the whole message
-        auth = MessageManager.auth_create(cipheredTitle + cipheredMessage, key)
-        signed_salt = get_salt_from_db(private_ciphered_key)
-        sign_key,signed_salt = KeyGen.key_from_user(hashedUser, 256, signed_salt)
-        private_key = MessageManager.decipher_message(private_ciphered_key, sign_key)
-        logging.debug(
-            "create_challenge() --- Deciphered private key %s, type %s",
-            private_key,
-            type(private_key),
-        )  # type is string
-        signature = create_signature(private_key, cipheredMessage)
-        logging.debug(
-            "create_signature() --- Signature %s, type of signature %s",
-            signature,
-            type(signature),
-        )  # type is bytes
-        # Insert the challenge into the db
         insert_challenge(
             cipheredTitle, hashedUser, cipheredMessage, True, auth, userToShareHash
         )
-        insert_signature_in_db(cipheredMessage, signature)
-        # Insert the salt into the keys db
-        insert_salt_in_db(cipheredMessage, salt)
 
-        response = make_response(
-            jsonify({"response": "Challenge has been created!"}), 201
-        )
-        return response
+    # Insert the signature into the db
+    insert_signature_in_db(cipheredMessage, signature)
+    # Insert the salt into the db
+    insert_salt_in_db(cipheredMessage, salt)
+
+    # Return a response
+    response = make_response(jsonify({"response": "Challenge has been created!"}), 201)
+    return response
 
 
 @challenges_bp.route("/get_public_challenges", methods=["GET"])
@@ -132,10 +101,11 @@ def get_public_challenges():
     Returns a response with all public challenges available for the user
     """
     publicChallenges = return_all_public()
-    response = []
     if not publicChallenges:
-        raise ValueError("No valid value for public challenges: NONE")
+        response = make_response(jsonify({"response": "No public challenges"}), 201)
+        return response
 
+    response = []
     # fields to decipher: title = 1, content = 2, author = 3, where numbers = index in the array
     for i in range(0, len(publicChallenges), 1):  # iterate through every row
         cipheredTitle = publicChallenges[i][1]
@@ -143,29 +113,26 @@ def get_public_challenges():
         cipheredContent = publicChallenges[i][3]
         auth_value = publicChallenges[i][4]
 
-        # Get the admin hash and generate the key with KeyGen class
-        hashed_user = HashManager.create_hash("admin")
+        # KEY GENERATION FOR AUTH AND DECIPHER
         challenge_salt = get_salt_from_db(cipheredContent)
-        key, challenge_salt = KeyGen.key_from_user(hashed_user, salt=challenge_salt)
+        key, _ = KeyGen.key_from_user(hashedAuthor, salt=challenge_salt)
 
-        # Check authentication of the message:
+        # AUTHENTICATION
         if not MessageManager.auth_verify(
             auth_value, cipheredTitle + cipheredContent, key
         ):
-            # TODO: Cambiar la response y hacer que se modifique en el frontend
-            # NOTE: Igual hay que hacer un continue aquí para que el resto no tengan
-            # problemas
             raise Exception("The message is not authenticated")
 
-        # recover the public key of the user
+        # SIGNATURE
+        # Get key and certificate of the author of the challenge
         public_key = get_public_key(hashedAuthor)
         certificate = get_certificates(hashedAuthor)
         logging.debug("Certificate obtain %s, \n\n %s", type(certificate), certificate)
-
         private_ciphered_key_cert = certificate[2]
         certificate = certificate[3]
-        salt = get_salt_from_db(private_ciphered_key_cert)
-        hashedAuthorKey, salt = KeyGen.key_from_user(hashedAuthor, 256, salt)
+
+        sign_salt = get_salt_from_db(private_ciphered_key_cert)
+        hashedAuthorKey, _ = KeyGen.key_from_user(hashedAuthor, 256, sign_salt)
         private_key_cert = MessageManager.decipher_message(
             private_ciphered_key_cert, hashedAuthorKey
         )
@@ -193,7 +160,7 @@ def get_public_challenges():
             )
             publicChallenges.pop(i)
         else:
-            # Decipher the title and content
+            # DECIPHER:
             title = MessageManager.decipher_message(cipheredTitle, key)
             content = MessageManager.decipher_message(cipheredContent, key)
 
@@ -215,7 +182,8 @@ def get_private_challenges():
     privateChallenges = return_shared_with_user(user_hash)
     response = []
     if not privateChallenges:
-        raise ValueError("No valid value for private challenges: NONE")
+        response = make_response(jsonify({"response": "No private challenges"}), 201)
+        return response
 
     for i in range(0, len(privateChallenges), 1):
 
@@ -226,7 +194,7 @@ def get_private_challenges():
 
         # Get user hash and key from KeyGen class
         challenge_salt = get_salt_from_db(cipheredContent)
-        key, challenge_salt = KeyGen.key_from_user(user_hash, salt=challenge_salt)
+        key, challenge_salt = KeyGen.key_from_user(hashedAuthor, salt=challenge_salt)
 
         # Check authentication of the message:
         if not MessageManager.auth_verify(
