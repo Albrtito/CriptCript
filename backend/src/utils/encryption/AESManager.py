@@ -1,6 +1,8 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import os
 
+from src.utils.keys import KeyGen
+
 # TODO: Se podría pensar en hacer que esta clase tuviese el cifrado directamente
 # implementado al crear la clase, de esta forma se crearía un instance de la calse para cada cifrado.
 class AESManager:
@@ -20,7 +22,7 @@ class AESManager:
         pass
 
     @staticmethod
-    def encript_AES(data: str, key: str,nonce = os.urandom(16)) -> bytes:
+    def encript_AES(data: str, key: bytes, nonce=KeyGen.new_nonce())-> bytes:
         """
         Encrypts the data with the key using AES
         :param data: The data to be encrypted
@@ -30,9 +32,8 @@ class AESManager:
         :return: The encrypted data
         """
         
-        # Convert the data and key to bytes
         data_bytes = data.encode()
-        key_bytes = key.encode()
+        key_bytes = key
 
         # Create the AES cipher:
         cipher = Cipher(algorithms.AES(key_bytes), modes.CTR(nonce))
@@ -48,7 +49,7 @@ class AESManager:
         return ciphered_data
 
     @staticmethod
-    def decript_AES(encrypted_data: bytes, key: str) -> str:
+    def decript_AES(encrypted_data: bytes, key: bytes) -> str:
         """
         Decrypts the data with the key using AES
         :param data: The data to be decrypted
@@ -57,7 +58,7 @@ class AESManager:
         
         """
         # Convert the key to bytes
-        key_bytes = key.encode()
+        key_bytes = key
         # Obtain the value for the nonce from the message
         nonce = encrypted_data[:16]
         # Substract the noncec from the encrypted data
