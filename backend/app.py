@@ -8,6 +8,7 @@ from src.mariaDB.query_certificates import insert_certificate
 from src.mariaDB.query_keys import insert_salt_in_db
 from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
 from src.utils.MessageManager import MessageManager
+from src.utils.HashManager import HashManager
 from src.utils.keys.KeyGen import key_from_user
 from src.utils.certificate.CertificateManager import CertificateManager
 from src.routes.user_routes import users_bp
@@ -22,10 +23,21 @@ CORS(app)
 def run_script():
     time.sleep(10) # nos aseguramos que se haya cargado en su totalidad la db
     print("Insert del usuario admin en la base de datos y todas sus credenciales...")
-    adminHash = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
-    adminPasswordHash = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'
-    insert_user( adminHash, adminPasswordHash)
+    adminHash = HashManager.create_hash('admin')
+    logging.debug('Creating admin user hash...')
+    logging.debug('Admin user hash created %s', adminHash)
+    adminPasswordHash = HashManager.create_hash('1234')
+    logging.debug('Creating admin user password hash...')
+    logging.debug('Admin user hash created %s', adminPasswordHash)
+    adminHash_direct = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+    adminPasswordHash_direct = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'
     
+    if adminHash != adminHash_direct or adminPasswordHash != adminPasswordHash_direct:
+        logging.debug('Error in the hash generation of the admin, hashed not equal')
+    else:
+        logging.debug('Hashes are correct, proceeding to insert the admin in the database')
+        insert_user(adminHash, adminPasswordHash)
+
     private, public = generate_rsa_keys() # usadas en firma y en certificado
     key,salt = key_from_user(adminHash)
     private_ciphered = MessageManager.cipher_message(private, key)
