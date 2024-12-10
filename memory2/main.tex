@@ -33,7 +33,7 @@
         \vspace*{3cm} 
         
         {\LARGE Criptografía y seguridad informática\\[0.5cm]} 
-        {\LARGE G24 - Entregable 1 \\[0.5cm]}
+        {\LARGE G24 - Entregable 2 \\[0.5cm]}
         
         \vspace*{6cm}
         
@@ -212,5 +212,29 @@ Firma digital es usada especialmente en la renderización de mensajes, ya que al
 
 Para cada mensaje, comprobamos si la firma que se relaciona con ese mensaje es la misma que la que nosotros generamos. Si no es así, enviaremos un mensaje en la terminal diciendo que dicho mensaje no se verifica correctamente, y que por lo tanto ha sido eliminado de la lista de renderizado (el usuario al que iba dirigido no podrá verlo).
 
+\section{Certificados}
+\label{sec:firmaDigital}
 
+Los certificados son usados ampliamente en la industria para comprobar datos y aportar autenticidad e integridad a mensajes o interacciones con el sistema.
+
+En este proyecto, también se ha implementado una jerarquía de entidades certificadoras para poder realizar estas acciones correctamente. La jerarquía es la siguiente:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{./images/certificatesStructure.png}
+    \caption{Jerarquía de entidades certificadoras}
+    \label{fig:jerarquia}
+\end{figure}
+
+La entidad certificadora \textbf{ADMIN} es generada en la inicialización del proyecto. Para ello, tenemos una base de datos totalmente inpendiente que se encarga de guardar los certificados creados.
+
+El certificado de esta entidad es firmado por sí misma, por lo que el usuario asume que es una entidad verífica y confiable.
+
+Estos certificados son usados para verificar que la clave pública que se usa en firma digital es efectivamente la clave oficial de un usuario, y no una clave que pueda suponer un ataque a confidencialidad o veracidad de la información.
+
+Para cada usuario que se registra en la aplicación se genera un certificado que es firmado por la entidad emisora \textbf{ADMIN}. Se guarda la clave pública generada para la firma como clave pública del certificado.
+
+Antes de renderizar cada mensaje, comprobamos que el certificado es correcto y que la información es la correcta. Tras esto, procedemos con el flujo previamente mencionado (firma digital, descifrado, \textit{response}). 
+
+Si la información del certificado obtenido no es correcta (es decir, que la verificación falla), eliminamos el mensaje de la lista de renderizado y emitimos un \textit{log} en la terminal para que quede constancia del error que ha ocurrido en la verificación.
 \end{document}
