@@ -5,6 +5,7 @@ from flask_cors import CORS
 from src.mariaDB.query_users import insert_user
 from src.mariaDB.query_digital_firm import insert_secure_keys
 from src.mariaDB.query_certificates import insert_certificate
+from src.mariaDB.query_keys import insert_salt_in_db
 from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
 from src.utils.MessageManager import MessageManager
 from src.utils.keys.KeyGen import key_from_user
@@ -14,7 +15,7 @@ from src.routes.challenge_routes import challenges_bp
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
-
+ 
 app = Flask(__name__)
 CORS(app)
 
@@ -26,9 +27,10 @@ def run_script():
     insert_user( adminHash, adminPasswordHash)
     
     private, public = generate_rsa_keys() # usadas en firma y en certificado
-    key = key_from_user(adminHash)
+    key,salt = key_from_user(adminHash)
     private_ciphered = MessageManager.cipher_message(private, key)
     insert_secure_keys(adminHash, private_ciphered, public)
+    insert_salt_in_db(private_ciphered, salt)
     
     # Generar el certificado para el admin, devuelve el certificado y la clave privada en formato PEM
     certificate_data = CertificateManager.generate_x509_certificate(
@@ -47,6 +49,7 @@ def run_script():
     
     # insert certificate in database
     ciphered_private_key_pem = MessageManager.cipher_message(private_key_pem.decode(), key)
+    insert_salt_in_db(ciphered_private_key_pem, salt)
     insert_certificate(adminHash, ciphered_private_key_pem, certificate_pem)
     logging.debug('--- Everything has been setted up correctly. Start using the app! --- ')
 

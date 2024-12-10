@@ -6,6 +6,7 @@ from flask import Flask, jsonify, make_response, request
 from src.mariaDB.query_users import insert_user, get_user_password
 from src.mariaDB.query_digital_firm import insert_secure_keys
 from src.mariaDB.query_certificates import insert_certificate
+from src.mariaDB.query_keys import insert_salt_in_db, get_salt_from_db
 from src.utils.certificate.CertificateManager import CertificateManager
 from src.utils.HashManager import HashManager
 from src.utils.digitalSign.DigitalSignManager import generate_rsa_keys
@@ -49,8 +50,9 @@ def create_user():
         private_key, public_key = generate_rsa_keys()
         logging.debug('Digital Sign keys generated: public key: %s  \n--- private key: %s', public_key, private_key)
         logging.debug('Digital sign keys types: public key type: %s --- private key type: %s', type(public_key), type(private_key))
-        key = KeyGen.key_from_user(hashed_user, 256)
+        key,salt = KeyGen.key_from_user(hashed_user, 256)
         private_key_ciphered = MessageManager.cipher_message(private_key, key)
+        insert_salt_in_db(private_key_ciphered, salt)
         logging.debug('Digital Sign private ciphered key: %s', private_key_ciphered)
         logging.debug('type of private key: %s', type(private_key_ciphered))
         
@@ -61,7 +63,8 @@ def create_user():
             return response
                 
         private_emisor_private_key = get_certificates(hashed_admin)[2]
-        admin_key = KeyGen.key_from_user(hashed_admin)
+        admin_salt = get_salt_from_db(private_emisor_private_key)
+        admin_key,admin_salt= KeyGen.key_from_user(hashed_admin,salt = admin_salt)
         emisor_private_key = MessageManager.decipher_message(private_emisor_private_key, admin_key)
         certificate_data = CertificateManager.generate_x509_certificate_for_another_entity(
             issuer_private_key= emisor_private_key.encode(),

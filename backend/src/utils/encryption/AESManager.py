@@ -22,7 +22,7 @@ class AESManager:
         pass
 
     @staticmethod
-    def encript_AES(data: str, key: str, nonce=KeyGen.new_nonce())-> bytes:
+    def encript_AES(data: str, key: bytes, nonce=KeyGen.new_nonce())-> bytes:
         """
         Encrypts the data with the key using AES
         :param data: The data to be encrypted
@@ -33,7 +33,7 @@ class AESManager:
         """
         
         data_bytes = data.encode()
-        key_bytes = key.encode()
+        key_bytes = key
 
         # Create the AES cipher:
         cipher = Cipher(algorithms.AES(key_bytes), modes.CTR(nonce))
@@ -49,7 +49,7 @@ class AESManager:
         return ciphered_data
 
     @staticmethod
-    def decript_AES(encrypted_data: bytes, key: str) -> str:
+    def decript_AES(encrypted_data: bytes, key: bytes) -> str:
         """
         Decrypts the data with the key using AES
         :param data: The data to be decrypted
@@ -58,7 +58,7 @@ class AESManager:
         
         """
         # Convert the key to bytes
-        key_bytes = key.encode()
+        key_bytes = key
         # Obtain the value for the nonce from the message
         nonce = encrypted_data[:16]
         # Substract the noncec from the encrypted data
