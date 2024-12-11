@@ -62,7 +62,7 @@ def create_challenge():
         auth = MessageManager.auth_create(cipheredTitle + cipheredMessage, key)
 
         # SIGNATURE
-        private_ciphered_key = get_private_ciphered_key(hashedUser)
+        private_ciphered_key = get_private_iphered_key(hashedUser)
         # Debugging
         logging.debug("%s", private_ciphered_key)
         logging.debug("Type of private key %s", type(private_ciphered_key))
