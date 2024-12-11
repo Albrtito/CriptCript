@@ -135,7 +135,7 @@ servidor del frontend. \\
 Actualmente no hay protección frente a un ataque de búsqueda de urls, cualquiera puede acceder a todo el contenido de la carpeta frontend desde la web.
 
 \subsubsection{Backend}
-La carpeta del backend contiene los archivos de `app.py` y `requirementes.txt` que recogen la creación de la api e instalación de los requisitos necesarios en el servidor de backend. El resto del código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
+La carpeta del backend contiene los archivos de `app.py` y `requirements.txt` que recogen la creación de la api e instalación de los requisitos necesarios en el servidor de backend. El resto del código se encuentra bajo src. Aquí diferenciamos entre tres carpetas:
 \begin{itemize}
 \item \textbf{mariaDB} $\rightarrow$ Métodos relacionados con la conexión a la DB
 
@@ -165,12 +165,8 @@ cifrados cásicos, firma digital y certificados}. \\
 \vspace{0.5cm}
 \fbox{
     \begin{minipage}[t]{0.8\textwidth}
-        \textbf{NOTA:} Para la primera entrega solo se utilizan las clases de AESManger
-        para cifrar y MACManager para autenticar, no obstante la estructura de 
-        clases está ideada para que otros algoritmos también puedan se utilizados, incluso
-        algoritmos de cifrado autenticado como fernet.\\
-        Haciendouso de esta estructura para la entrega final, el usuario será
-        capaz de elegir con que algoritmos cifrar
+        \textbf{NOTA:} Para esta entrega solo se utilizan algoritmos de cifrado simétrico como AES y cifrado asimétrico como RSA (ya que es el estándar frente a DSA). En general, el sistema usa un cifrado híbrido que añade un extra de seguridad a los protocolos usados.\\
+        También usaremos RSA para firma digital y certificación, además de HMACs para aportar integridad a los mensajes de los usuarios.
     \end{minipage}
 }
 
