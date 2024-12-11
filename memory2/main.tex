@@ -179,6 +179,10 @@ cifrados cásicos, firma digital y certificados}. \\
     \item A la hora de renderizar los mensajes, comprobamos que la clave pública del usuario que creó el mensaje se verifique con su certificado, que la firma del mensaje sea la correcta y por último desciframos (no sin antes comprobar si el HMAC es el correcto).
 \end{itemize}
 
+\subsubsection{Flujo de código: Usuario crea un mensaje privado}
+
+Asumimos que el usuario $A$ ya ha sido creado y ha iniciado sesión. Ha creado un mensaje privado a un usuario $B$. El siguiente diagrama describe el flujo del código ejecutado para cifrar el mensaje, generar una firma digital y el resto de lógica en lo que respecta a la criptografía:
+
 \section{Firma Digital}
 \label{sec:firmaDigital}
 La firma digital es usada para verificar la integridad y autenticidad de los mensajes que los usuarios han creado y que se van a renderizar. 
@@ -209,7 +213,7 @@ Firma digital es usada especialmente en la renderización de mensajes, ya que al
 Para cada mensaje, comprobamos si la firma que se relaciona con ese mensaje es la misma que la que nosotros generamos. Si no es así, enviaremos un mensaje en la terminal diciendo que dicho mensaje no se verifica correctamente, y que por lo tanto ha sido eliminado de la lista de renderizado (el usuario al que iba dirigido no podrá verlo).
 
 \section{Certificados}
-\label{sec:firmaDigital}
+\label{sec:certificados}
 
 Los certificados son usados ampliamente en la industria para comprobar datos y aportar autenticidad e integridad a mensajes o interacciones con el sistema.
 
