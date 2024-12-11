@@ -48,12 +48,13 @@
     \end{center}
 \end{titlepage}
 
+\newpage
 % Eliminamos el índice de contenidos
 \tableofcontents
 \vspace{2cm}
 %\newpage
 
-
+\newpage
 % Introducción sin numeración de capítulo
 \section{Propósito de la aplicación. Estructura interna}
 
@@ -179,9 +180,16 @@ cifrados cásicos, firma digital y certificados}. \\
     \item A la hora de renderizar los mensajes, comprobamos que la clave pública del usuario que creó el mensaje se verifique con su certificado, que la firma del mensaje sea la correcta y por último desciframos (no sin antes comprobar si el HMAC es el correcto).
 \end{itemize}
 
-\subsubsection{Flujo de código: Usuario crea un mensaje privado}
+\subsubsection{Flujo de código: Usuario renderiza un mensaje privado}
 
-Asumimos que el usuario $A$ ya ha sido creado y ha iniciado sesión. Ha creado un mensaje privado a un usuario $B$. El siguiente diagrama describe el flujo del código ejecutado para cifrar el mensaje, generar una firma digital y el resto de lógica en lo que respecta a la criptografía:
+Asumimos que el usuario $A$ ya ha sido creado y ha iniciado sesión. Ha creado un mensaje privado a un usuario $B$. El siguiente diagrama describe el flujo del código ejecutado para renderizar el mensaje, comprobar la firma digital y el resto de lógica en lo que respecta a la criptografía:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{./images/messageDecipheringFlux.png}
+    \caption{Jerarquía de entidades certificadoras}
+    \label{fig:jerarquia}
+\end{figure}
 
 \section{Firma Digital}
 \label{sec:firmaDigital}
@@ -237,4 +245,27 @@ Para cada usuario que se registra en la aplicación se genera un certificado que
 Antes de renderizar cada mensaje, comprobamos que el certificado es correcto y que la información es la correcta. Tras esto, procedemos con el flujo previamente mencionado (firma digital, descifrado, \textit{response}). 
 
 Si la información del certificado obtenido no es correcta (es decir, que la verificación falla), eliminamos el mensaje de la lista de renderizado y emitimos un \textit{log} en la terminal para que quede constancia del error que ha ocurrido en la verificación.
+\section{Complejidad y diseño: Crítica a la aplicación}
+
+Nuestro equipo cree firmemente que la aplicación es segura y que se ha implementado todo de manera correcta: desde el cifrado híbrido hasta la firma digital y los certificados. La combinación de técnicas avanzadas de criptografía refleja un alto nivel de conocimiento técnico y atención al detalle en el diseño y la implementación. Además, la modularidad del sistema permite un entendimiento claro de las diferentes etapas de cifrado y autenticación, lo que resulta en una experiencia educativa enriquecedora para los usuarios.  
+
+Sin embargo, cabe mencionar que en su intento de abarcar diversos aspectos de la criptografía, la aplicación puede resultar algo compleja para usuarios menos familiarizados con el tema. Aunque la seguridad es prioritaria, algunos aspectos de la interfaz podrían simplificarse para hacer más accesible el entendimiento del flujo de los procesos. Asimismo, sería útil incluir documentación más detallada sobre el manejo de excepciones y posibles escenarios de ataque, asegurando que incluso los usuarios menos experimentados comprendan cómo funciona y qué medidas tomar ante incidentes específicos.  
+
+En general, el esfuerzo de nuestro equipo ha culminado en una solución robusta y educativa, aunque aún existen áreas donde se puede mejorar para maximizar tanto su seguridad como su usabilidad.  
+
+
+
+\section{Mejoras}
+Entre muchas de las mejoras que hemos añadido (principalmente de optimización y modularización de objetos), las más importantes a destacar son las siguientes:
+
+\begin{enumerate}
+    \item Se ha añadido la función de derivación de claves. De esta manera, en ningún momento usamos la propia clave original para nada; sino que aplicamos una función de derivación que se encarga de crear una clave que dependa de la original.
+
+    Por supuesto, esto no efectivo si un atacante es capaz de obtener la clave privada. Por ello la guardamos de manera cifrada (desde la primera práctica) en la base de datos.
+
+    \item Seguimos la recomendación del profesor de modularizar todas las bases de datos. Es decir, buscamos hacer cada base de datos lo más atómico posible, simulando provedores externos a servicios independientes.
+
+    De esta manera, obtenemos una capa de seguridad extra al no tener todo guardado en la misma base de datos. Esto es, a efectos prácticos, lo más parecido que hemos podido de recrear con respecto al mundo real.
+\end{enumerate}
 \end{document}
+
