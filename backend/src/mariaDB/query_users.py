@@ -32,7 +32,7 @@ def insert_user(hashed_user, hashed_password) -> bool:
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # TODO: Esta query esta deprecada. Es del modelo inicial del boilerplate
+        
         query = f"INSERT INTO {DATABASE_NAME}.users VALUES (%s, %s)"
         cursor.execute(query, (hashed_user, hashed_password))
         connection.commit()

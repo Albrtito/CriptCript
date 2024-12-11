@@ -1,12 +1,14 @@
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-import os
+import logging
 
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from src.utils.keys import KeyGen
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 # TODO: Se podría pensar en hacer que esta clase tuviese el cifrado directamente
 # implementado al crear la clase, de esta forma se crearía un instance de la calse para cada cifrado.
 class AESManager:
-
     """
     This class contains all the methods related with AES encryption and
     decryption.
@@ -22,7 +24,7 @@ class AESManager:
         pass
 
     @staticmethod
-    def encript_AES(data: str, key: bytes, nonce=KeyGen.new_nonce())-> bytes:
+    def encript_AES(data: str, key: bytes, nonce=KeyGen.new_nonce()) -> bytes:
         """
         Encrypts the data with the key using AES
         :param data: The data to be encrypted
@@ -31,7 +33,7 @@ class AESManager:
         :param nonce: Value for the nonce(CTR mode)
         :return: The encrypted data
         """
-        
+
         data_bytes = data.encode()
         key_bytes = key
 
@@ -55,7 +57,7 @@ class AESManager:
         :param data: The data to be decrypted
         :param key: The key to decrypt the data
         :return: The decrypted data
-        
+
         """
         # Convert the key to bytes
         key_bytes = key
@@ -68,12 +70,18 @@ class AESManager:
         cipher = Cipher(algorithms.AES(key_bytes), modes.CTR(nonce))
 
         # Create the encriptor. Messages going though it will be ciphered with
-            # the cipher generated above.
+        # the cipher generated above.
         decryptor = cipher.decryptor()
 
         # Cipher the message:
         data = decryptor.update(encrypted_data) + decryptor.finalize()
 
         # Rerturn the ciphered message, decoded as a string
+        try:
+            return data.decode()
 
-        return data.decode()
+        except:
+            logging.warning("AESDECIPHER() --- Problem while deciphering a message")
+            logging.debug(
+                "AESDECIPHER() --- Values on error: data: %s, key: %s", data, key
+            )

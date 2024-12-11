@@ -118,7 +118,7 @@ class MessageManager:
             return message 
         except:
             logging.warning("Problem while deciphering a message")
-            raise Exception("Could not decipher message") 
+            raise Exception("Could not decipher message:%s", ciphered_message)
 
     @staticmethod
     def auth_create(ciphered_message:bytes,key:bytes,AUTH_TYPE = "HMAC") -> bytes:

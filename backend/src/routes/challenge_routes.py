@@ -47,6 +47,13 @@ def create_challenge():
         # ENCRIPTION
         # Get user hash and the key from KeyGen class
         key, salt = KeyGen.key_from_user(hashedUser)
+        logging.debug(
+            "create_challenge() --- key: %s, salt: %s, hashed_user: %s",
+            key,
+            salt,
+            hashedUser,
+        )
+
         # Cipher the title and the document
         cipheredTitle = MessageManager.cipher_message(title, key)
         cipheredMessage = MessageManager.cipher_message(document, key)
@@ -61,7 +68,7 @@ def create_challenge():
         logging.debug("Type of private key %s", type(private_ciphered_key))
         # Ge the salt referenced to the private key
         signed_salt = get_salt_from_db(private_ciphered_key)
-        sign_key, signed_salt = KeyGen.key_from_user(hashedUser, 256, signed_salt)
+        sign_key, _ = KeyGen.key_from_user(hashedUser, salt=signed_salt)
         private_key = MessageManager.decipher_message(private_ciphered_key, sign_key)
         logging.debug(
             "create_challenge() --- Deciphered private key %s, type %s",
@@ -89,6 +96,15 @@ def create_challenge():
     insert_signature_in_db(cipheredMessage, signature)
     # Insert the salt into the db
     insert_salt_in_db(cipheredMessage, salt)
+    logging.debug(
+        "create_challenge() --- Salt inserted in the db salt %s, referenced to ciphered \
+        message %s,cleartext is %s,  under user %s, hashed as %s",
+        salt,
+        cipheredMessage,
+        document,
+        userLogged,
+        hashedUser,
+    )
 
     # Return a response
     response = make_response(jsonify({"response": "Challenge has been created!"}), 201)
@@ -132,7 +148,10 @@ def get_public_challenges():
         certificate = certificate[3]
 
         sign_salt = get_salt_from_db(private_ciphered_key_cert)
-        hashedAuthorKey, _ = KeyGen.key_from_user(hashedAuthor, 256, sign_salt)
+        hashedAuthorKey, _ = KeyGen.key_from_user(
+            HashManager.create_hash("admin"),
+            salt=sign_salt,
+        )
         private_key_cert = MessageManager.decipher_message(
             private_ciphered_key_cert, hashedAuthorKey
         )
@@ -161,6 +180,14 @@ def get_public_challenges():
             publicChallenges.pop(i)
         else:
             # DECIPHER:
+            logging.debug("----Procedding into deciphering the message-----")
+            logging.debug(
+                " get_public_challenges() --- cipheredContent: %s, hashedAuthor: %s,salt: %s",
+                cipheredContent,
+                hashedAuthor,
+                challenge_salt,
+            )
+
             title = MessageManager.decipher_message(cipheredTitle, key)
             content = MessageManager.decipher_message(cipheredContent, key)
 
@@ -210,7 +237,10 @@ def get_private_challenges():
         private_ciphered_key_cert = certificate[2]
         certificate = certificate[3]
         cert_salt = get_salt_from_db(private_ciphered_key_cert)
-        hashedAuthorKey, cert_salt = KeyGen.key_from_user(hashedAuthor, salt=cert_salt)
+        hashedAuthorKey, cert_salt = KeyGen.key_from_user(
+            HashManager.create_hash("admin"),
+            salt=cert_salt,
+        )
         private_key_cert = MessageManager.decipher_message(
             private_ciphered_key_cert, hashedAuthorKey
         )

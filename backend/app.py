@@ -2,7 +2,7 @@ from flask import Flask
 import threading
 import time
 from flask_cors import CORS
-from src.mariaDB.query_users import insert_user
+from src.mariaDB.query_users import insert_user, user_exists
 from src.mariaDB.query_digital_firm import insert_secure_keys
 from src.mariaDB.query_certificates import insert_certificate
 from src.mariaDB.query_keys import insert_salt_in_db
@@ -36,8 +36,12 @@ def run_script():
         logging.debug('Error in the hash generation of the admin, hashed not equal')
     else:
         logging.debug('Hashes are correct, proceeding to insert the admin in the database')
-        insert_user(adminHash, adminPasswordHash)
+        if not user_exists(adminHash):
+            insert_user(adminHash, adminPasswordHash)
+        else:
+            logging.debug('app.run() --- Admin already exists in the database')
 
+    
     private, public = generate_rsa_keys() # usadas en firma y en certificado
     key,salt = key_from_user(adminHash)
     private_ciphered = MessageManager.cipher_message(private, key)

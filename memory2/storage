@@ -1,0 +1,37 @@
+
+        # SIGNATURE
+        # Get key and certificate of the author of the challenge
+        public_key = get_public_key(hashedAuthor)
+        certificate = get_certificates(hashedAuthor)
+        logging.debug("Certificate obtain %s, \n\n %s", type(certificate), certificate)
+        private_ciphered_key_cert = certificate[2]
+        certificate = certificate[3]
+
+        sign_salt = get_salt_from_db(private_ciphered_key_cert)
+        hashedAuthorKey, _ = KeyGen.key_from_user(hashedAuthor, 256, sign_salt)
+        private_key_cert = MessageManager.decipher_message(
+            private_ciphered_key_cert, hashedAuthorKey
+        )
+        logging.debug(
+            "Private key from the certificate %s, \n\n %s \n",
+            type(certificate),
+            certificate,
+        )
+
+        if not CertificateManager.verify_certificate(
+            private_key_cert.encode(), public_key.encode(), certificate
+        ):
+            logging.debug("The message %s was not certified... Woopsie", i)
+            publicChallenges.pop(i)
+
+        logging.debug("public key: %s and its type %s", public_key, type(public_key))
+        # recover the signature from the message
+        signature = get_signature(cipheredContent)
+        logging.debug("signature: %s and its type %s", signature, type(signature))
+        # check the signature
+        if not verify_signature(public_key, cipheredContent, signature):
+            logging.debug(
+                "The message %s has a problem with its signature... It will not be shown",
+                i,
+            )
+            publicChallenges.pop(i)

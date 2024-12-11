@@ -7,13 +7,16 @@ from src.mariaDB.query_challenges import get_len_challenges
 from src.mariaDB.query_users import get_user_password
 
 
-def key_from_user(hashed_user: str, length=256, salt=os.urandom(16)) -> tuple[bytes, bytes]:
+def key_from_user(hashed_user: str, length=256, salt=None) -> tuple[bytes, bytes]:
     """
     Creates a key derived from the user hashed password.
     :param hashed_user -> String with the username (in hash form)
     :param lenght -> Lenght of the key to generate in BITS
     :return -> Return the value of the key created
     """
+    # If the salt is None, generate a new one
+    if salt is None:
+        salt = os.urandom(16)
     # Get the current password of the user:
     user_password = get_user_password(hashed_user)
     # Derive a key from the user password
